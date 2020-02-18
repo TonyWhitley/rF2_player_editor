@@ -15,11 +15,12 @@ namespace WindowsFormsApp1
         [STAThread]
         static void Main()
         {
-            JObject jobj = PrormaSC.ReadJsonFile();
+            //dynamic jobj = PrormaSC.ReadJsonFile();
+            Dictionary<string, dynamic> player = PrormaSC.ReadJsonFile();
             Console.ReadLine();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(jobj));
+            Application.Run(new Form1(player));
         }
     }
 }

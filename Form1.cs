@@ -13,11 +13,70 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+        private int tab(Dictionary<string, dynamic> player,
+            string section,
+            TableLayoutPanel panel,
+            TextBox[] txtOptionValue,
+            Label[] lbls,
+            ToolTip[] toolTips,
+            ComboBox[] comboBoxes,
+            int width,
+            int i)
+        {
+            string lastval = null;
+
+            foreach (var entry in player[section])
+            {
+                string name = entry.Name;
+                string val = entry.Value;
+
+                if (name.Last() != '#')
+                {
+                    lbls[i].Name = name;
+                    toolTips[i].SetToolTip(lbls[i], name);
+                    lbls[i].Text = name;
+                    lbls[i].AutoSize = true;
+                    lbls[i].Visible = true;
+                    panel.Controls.Add(lbls[i]);
+                    if (val == "True" || val == "False")
+                    {
+                        comboBoxes[i].Name = name;
+                        comboBoxes[i].Items.AddRange(new object[] { "True", "False" });
+                        comboBoxes[i].Text = val;
+                        comboBoxes[i].Width = width;
+                        panel.Controls.Add(comboBoxes[i]);
+                    }
+                    else
+                    {
+                        txtOptionValue[i].Name = name;
+                        txtOptionValue[i].Text = val;
+                        txtOptionValue[i].Width = width;
+                        panel.Controls.Add(txtOptionValue[i]);
+                    }
+                    i++;
+                }
+                else
+                {
+                    string tip = entry.Value;
+                    if (lastval == "True" || lastval == "False")
+                    {
+                        toolTips[i - 1].SetToolTip(comboBoxes[i - 1], tip);
+                    }
+                    else
+                    {
+                        toolTips[i - 1].SetToolTip(txtOptionValue[i - 1], tip);
+                    }
+                }
+                lastval = val;
+            }
+            return i;
+        }
         public Form1(Dictionary<string, dynamic> player)
         {
-            TextBox[] txtOptionValue = new TextBox[1200]; 
+            TextBox[] txtOptionValue = new TextBox[1200];
             Label[] lbls = new Label[1200];
             ToolTip[] toolTips = new ToolTip[1200];
+            ComboBox[] comboBoxes = new ComboBox[1200];
 
             InitializeComponent();
             for (int u = 0; u < txtOptionValue.Count(); u++)
@@ -25,6 +84,7 @@ namespace WindowsFormsApp1
                 txtOptionValue[u] = new TextBox();
                 lbls[u] = new Label();
                 toolTips[u] = new ToolTip();
+                comboBoxes[u] = new ComboBox();
             }
 
             this.tableLayoutPanelChat.RowCount = 12;
@@ -32,7 +92,7 @@ namespace WindowsFormsApp1
             foreach (var entry in player["CHAT"])
             //foreach (Label txt in lbls)
             {
-                // then they're not sorted string name = entry.Name; 
+                // then they're not sorted string name = entry.Name;
                 string name = "Quick Chat #" + (i+1).ToString();
                 lbls[i].Name = name;
                 lbls[i].Text = name;
@@ -47,9 +107,18 @@ namespace WindowsFormsApp1
                 i++;
             }
 
+            string lastval = null;
+
+            i = tab(player, "DRIVING AIDS", this.tableLayoutPanelDrivingAids, txtOptionValue, lbls, toolTips, comboBoxes, 50, i);
+            i = tab(player, "Graphic Options", this.tableLayoutPanelGraphicOptions, txtOptionValue, lbls, toolTips, comboBoxes, 50, i);
+            i = tab(player, "Race Conditions", this.tableLayoutPanelRaceConditions, txtOptionValue, lbls, toolTips, comboBoxes, 50, i);
+            i = tab(player, "Sound Options", this.tableLayoutPanelSoundOptions, txtOptionValue, lbls, toolTips, comboBoxes, 130, i);
+            /*
             foreach (var entry in player["DRIVING AIDS"])
             {
                 string name = entry.Name;
+                string val = entry.Value;
+
                 if (name.Last() != '#')
                 {
                     lbls[i].Name = name;
@@ -57,17 +126,36 @@ namespace WindowsFormsApp1
                     lbls[i].Text = name;
                     lbls[i].Visible = true;
                     this.tableLayoutPanelDrivingAids.Controls.Add(lbls[i]);
-                    txtOptionValue[i].Name = Name;
-                    txtOptionValue[i].Text = entry.Value;
-                    txtOptionValue[i].Width = 50;
-                    this.tableLayoutPanelDrivingAids.Controls.Add(txtOptionValue[i]);
+                    if (val == "True" || val == "False")
+                    {
+                        comboBoxes[i].Name = name;
+                        comboBoxes[i].Items.AddRange(new object[] { "True", "False" });
+                        comboBoxes[i].Text = val;
+                        comboBoxes[i].Width = 50;
+                        this.tableLayoutPanelDrivingAids.Controls.Add(comboBoxes[i]);
+                    }
+                    else
+                    {
+                        txtOptionValue[i].Name = name;
+                        txtOptionValue[i].Text = val;
+                        txtOptionValue[i].Width = 50;
+                        this.panel.Controls.Add(txtOptionValue[i]);
+                    }
                     i++;
                 }
                 else
                 {
                     string tip = entry.Value;
-                    toolTips[i - 1].SetToolTip(txtOptionValue[i - 1], tip);
+                    if (lastval == "True" || lastval == "False")
+                    {
+                        toolTips[i - 1].SetToolTip(comboBoxes[i-1], tip);
+                    }
+                    else
+                    {
+                        toolTips[i - 1].SetToolTip(txtOptionValue[i-1], tip);
+                    }
                 }
+                lastval = val;
             }
 
             foreach (var entry in player["Graphic Options"])
@@ -141,39 +229,7 @@ namespace WindowsFormsApp1
                     toolTips[i - 1].SetToolTip(txtOptionValue[i - 1], tip);
                 }
             }
-
-            
-            //this.textBox1.Text = "Hello";
-            /*this.textBox1.Text = player["CHAT"]["Quick Chat #1"];
-            this.textBox2.Text = player["CHAT"]["Quick Chat #2"];
-            this.textBox3.Text = player["CHAT"]["Quick Chat #3"];*/
-
-
-
-            /*var chat = jobj.SelectToken("CHAT").Children();
-            var chat1 = chat[0]["['Quick Chat #1']"];
-            var CHAT = jobj.CHAT;
-            // UGLY!!!!!
-            foreach (var chatt in CHAT)
-            {
-                var chattn = chatt.Name;
-                var chattv = chatt.Value;
-                if (chattn == "Quick Chat #1")
-                {
-                    this.textBox1.Text = chattv;
-                }
-                if (chattn == "Quick Chat #2")
-                {
-                    this.textBox2.Text = chattv;
-                }
-                if (chattn == "Quick Chat #3")
-                {
-                    this.textBox3.Text = chattv;
-                }
-
-            }
             */
-
         }
     }
 }

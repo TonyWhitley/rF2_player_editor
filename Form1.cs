@@ -15,16 +15,19 @@ namespace WindowsFormsApp1
     {
         public Form1(Dictionary<string, dynamic> player)
         {
-            TextBox[] txtTeamNames = new TextBox[12]; 
-            Label[] lbls = new Label[12];
+            TextBox[] txtOptionValue = new TextBox[1200]; 
+            Label[] lbls = new Label[1200];
+            ToolTip[] toolTips = new ToolTip[1200];
 
             InitializeComponent();
-            for (int u = 0; u < txtTeamNames.Count(); u++)
+            for (int u = 0; u < txtOptionValue.Count(); u++)
             {
-                txtTeamNames[u] = new TextBox();
+                txtOptionValue[u] = new TextBox();
                 lbls[u] = new Label();
+                toolTips[u] = new ToolTip();
             }
-            
+
+            this.tableLayoutPanelChat.RowCount = 12;
             int i = 0;
             foreach (var entry in player["CHAT"])
             //foreach (Label txt in lbls)
@@ -35,14 +38,111 @@ namespace WindowsFormsApp1
                 lbls[i].Text = name;
                 //txt.Location = new Point(0, 32 + (i * 28));
                 lbls[i].Visible = true;
-                this.tableLayoutPanel1.Controls.Add(lbls[i]);
-                txtTeamNames[i].Name = Name;
+                this.tableLayoutPanelChat.Controls.Add(lbls[i]);
+                txtOptionValue[i].Name = Name;
                 // txtTeamNames[i].Text = entry.Value;
-                txtTeamNames[i].Text = player["CHAT"][name];
-                txtTeamNames[i].Width = 200;
-                this.tableLayoutPanel1.Controls.Add(txtTeamNames[i]);
+                txtOptionValue[i].Text = player["CHAT"][name];
+                txtOptionValue[i].Width = 200;
+                this.tableLayoutPanelChat.Controls.Add(txtOptionValue[i]);
                 i++;
             }
+
+            foreach (var entry in player["DRIVING AIDS"])
+            {
+                string name = entry.Name;
+                if (name.Last() != '#')
+                {
+                    lbls[i].Name = name;
+                    toolTips[i].SetToolTip(lbls[i], name);
+                    lbls[i].Text = name;
+                    lbls[i].Visible = true;
+                    this.tableLayoutPanelDrivingAids.Controls.Add(lbls[i]);
+                    txtOptionValue[i].Name = Name;
+                    txtOptionValue[i].Text = entry.Value;
+                    txtOptionValue[i].Width = 50;
+                    this.tableLayoutPanelDrivingAids.Controls.Add(txtOptionValue[i]);
+                    i++;
+                }
+                else
+                {
+                    string tip = entry.Value;
+                    toolTips[i - 1].SetToolTip(txtOptionValue[i - 1], tip);
+                }
+            }
+
+            foreach (var entry in player["Graphic Options"])
+            {
+                string name = entry.Name;
+                if (name.Last() != '#')
+                {
+                    lbls[i].Name = name;
+                    toolTips[i].SetToolTip(lbls[i], name);
+                    lbls[i].Text = name;
+                    lbls[i].Visible = true;
+                    lbls[i].AutoSize = true;
+                    this.tableLayoutPanelGraphicOptions.Controls.Add(lbls[i]);
+                    txtOptionValue[i].Name = Name;
+                    txtOptionValue[i].Text = entry.Value;
+                    txtOptionValue[i].Width = 50;
+                    this.tableLayoutPanelGraphicOptions.Controls.Add(txtOptionValue[i]);
+                    i++;
+                }
+                else
+                {
+                    string tip = entry.Value;
+                    toolTips[i - 1].SetToolTip(txtOptionValue[i - 1], tip);
+                }
+            }
+
+            foreach (var entry in player["Race Conditions"])
+            {
+                string name = entry.Name;
+                if (name.Last() != '#')
+                {
+                    lbls[i].Name = name;
+                    toolTips[i].SetToolTip(lbls[i], name);
+                    lbls[i].Text = name;
+                    lbls[i].Visible = true;
+                    lbls[i].AutoSize = true;
+                    this.tableLayoutPanelRaceConditions.Controls.Add(lbls[i]);
+                    txtOptionValue[i].Name = Name;
+                    txtOptionValue[i].Text = entry.Value;
+                    txtOptionValue[i].Width = 50;
+                    this.tableLayoutPanelRaceConditions.Controls.Add(txtOptionValue[i]);
+                    i++;
+                }
+                else
+                {
+                    string tip = entry.Value;
+                    toolTips[i - 1].SetToolTip(txtOptionValue[i - 1], tip);
+                }
+            }
+
+            foreach (var entry in player["Sound Options"])
+            {
+                string name = entry.Name;
+                if (name.Last() != '#')
+                {
+                    lbls[i].Name = name;
+                    toolTips[i].SetToolTip(lbls[i], name);
+                    lbls[i].Text = name;
+                    lbls[i].Visible = true;
+                    lbls[i].AutoSize = true;
+                    this.tableLayoutPanelSoundOptions.Controls.Add(lbls[i]);
+                    txtOptionValue[i].Name = Name;
+                    txtOptionValue[i].Text = entry.Value;
+                    txtOptionValue[i].Width = 100;
+                    this.tableLayoutPanelSoundOptions.Controls.Add(txtOptionValue[i]);
+                    i++;
+                }
+                else
+                {
+                    string tip = entry.Value;
+                    toolTips[i - 1].SetToolTip(txtOptionValue[i - 1], tip);
+                }
+            }
+
+            
             //this.textBox1.Text = "Hello";
             /*this.textBox1.Text = player["CHAT"]["Quick Chat #1"];
             this.textBox2.Text = player["CHAT"]["Quick Chat #2"];

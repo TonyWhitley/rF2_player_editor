@@ -16,8 +16,8 @@ namespace WindowsFormsApp1
         private int tab(Dictionary<string, dynamic> player,
             string section,
             TableLayoutPanel panel,
-            TextBox[] txtOptionValue,
-            Label[] lbls,
+            TextBox[] textBoxes,
+            Label[] labels,
             ToolTip[] toolTips,
             ComboBox[] comboBoxes,
             int width,
@@ -32,14 +32,17 @@ namespace WindowsFormsApp1
 
                 if (name.Last() != '#')
                 {
-                    lbls[i].Name = name;
-                    toolTips[i].SetToolTip(lbls[i], name);
-                    lbls[i].Text = name;
-                    lbls[i].AutoSize = true;
-                    lbls[i].Visible = true;
-                    panel.Controls.Add(lbls[i]);
+                    labels[i].Name = name;
+                    // Some of the key names are long, use tooltips to hold the
+                    // full name which may get truncated in the form
+                    toolTips[i].SetToolTip(labels[i], name);
+                    labels[i].Text = name;
+                    labels[i].AutoSize = true;
+                    labels[i].Visible = true;
+                    panel.Controls.Add(labels[i]);
+
                     if (val == "True" || val == "False")
-                    {
+                    {   // Use a combobox for booleans
                         comboBoxes[i].Name = name;
                         comboBoxes[i].Items.AddRange(new object[] { "True", "False" });
                         comboBoxes[i].Text = val;
@@ -47,24 +50,25 @@ namespace WindowsFormsApp1
                         panel.Controls.Add(comboBoxes[i]);
                     }
                     else
-                    {
-                        txtOptionValue[i].Name = name;
-                        txtOptionValue[i].Text = val;
-                        txtOptionValue[i].Width = width;
-                        panel.Controls.Add(txtOptionValue[i]);
+                    {   // Use a textbox for general values
+                        textBoxes[i].Name = name;
+                        textBoxes[i].Text = val;
+                        textBoxes[i].Width = width;
+                        panel.Controls.Add(textBoxes[i]);
                     }
                     i++;
                 }
                 else
-                {
+                {   // JSON keys ending in # are comments, use them for tooltips
                     string tip = entry.Value;
                     if (lastval == "True" || lastval == "False")
                     {
+                        // i-1 is not necessarily correct, should find the matching key
                         toolTips[i - 1].SetToolTip(comboBoxes[i - 1], tip);
                     }
                     else
                     {
-                        toolTips[i - 1].SetToolTip(txtOptionValue[i - 1], tip);
+                        toolTips[i - 1].SetToolTip(textBoxes[i - 1], tip);
                     }
                 }
                 lastval = val;
@@ -73,16 +77,16 @@ namespace WindowsFormsApp1
         }
         public Form1(Dictionary<string, dynamic> player)
         {
-            TextBox[] txtOptionValue = new TextBox[1200];
-            Label[] lbls = new Label[1200];
+            TextBox[] textBoxes = new TextBox[1200];
+            Label[] labels = new Label[1200];
             ToolTip[] toolTips = new ToolTip[1200];
             ComboBox[] comboBoxes = new ComboBox[1200];
 
             InitializeComponent();
-            for (int u = 0; u < txtOptionValue.Count(); u++)
+            for (int u = 0; u < textBoxes.Count(); u++)
             {
-                txtOptionValue[u] = new TextBox();
-                lbls[u] = new Label();
+                textBoxes[u] = new TextBox();
+                labels[u] = new Label();
                 toolTips[u] = new ToolTip();
                 comboBoxes[u] = new ComboBox();
             }
@@ -94,142 +98,49 @@ namespace WindowsFormsApp1
             {
                 // then they're not sorted string name = entry.Name;
                 string name = "Quick Chat #" + (i+1).ToString();
-                lbls[i].Name = name;
-                lbls[i].Text = name;
-                //txt.Location = new Point(0, 32 + (i * 28));
-                lbls[i].Visible = true;
-                this.tableLayoutPanelChat.Controls.Add(lbls[i]);
-                txtOptionValue[i].Name = Name;
-                // txtTeamNames[i].Text = entry.Value;
-                txtOptionValue[i].Text = player["CHAT"][name];
-                txtOptionValue[i].Width = 200;
-                this.tableLayoutPanelChat.Controls.Add(txtOptionValue[i]);
+                labels[i].Name = name;
+                labels[i].Text = name;
+                labels[i].Visible = true;
+                this.tableLayoutPanelChat.Controls.Add(labels[i]);
+                textBoxes[i].Name = Name;
+                textBoxes[i].Text = player["CHAT"][name];
+                textBoxes[i].Width = 200;
+                this.tableLayoutPanelChat.Controls.Add(textBoxes[i]);
                 i++;
             }
 
-            string lastval = null;
-
-            i = tab(player, "DRIVING AIDS", this.tableLayoutPanelDrivingAids, txtOptionValue, lbls, toolTips, comboBoxes, 50, i);
-            i = tab(player, "Graphic Options", this.tableLayoutPanelGraphicOptions, txtOptionValue, lbls, toolTips, comboBoxes, 50, i);
-            i = tab(player, "Race Conditions", this.tableLayoutPanelRaceConditions, txtOptionValue, lbls, toolTips, comboBoxes, 50, i);
-            i = tab(player, "Sound Options", this.tableLayoutPanelSoundOptions, txtOptionValue, lbls, toolTips, comboBoxes, 130, i);
-            /*
-            foreach (var entry in player["DRIVING AIDS"])
-            {
-                string name = entry.Name;
-                string val = entry.Value;
-
-                if (name.Last() != '#')
-                {
-                    lbls[i].Name = name;
-                    toolTips[i].SetToolTip(lbls[i], name);
-                    lbls[i].Text = name;
-                    lbls[i].Visible = true;
-                    this.tableLayoutPanelDrivingAids.Controls.Add(lbls[i]);
-                    if (val == "True" || val == "False")
-                    {
-                        comboBoxes[i].Name = name;
-                        comboBoxes[i].Items.AddRange(new object[] { "True", "False" });
-                        comboBoxes[i].Text = val;
-                        comboBoxes[i].Width = 50;
-                        this.tableLayoutPanelDrivingAids.Controls.Add(comboBoxes[i]);
-                    }
-                    else
-                    {
-                        txtOptionValue[i].Name = name;
-                        txtOptionValue[i].Text = val;
-                        txtOptionValue[i].Width = 50;
-                        this.panel.Controls.Add(txtOptionValue[i]);
-                    }
-                    i++;
-                }
-                else
-                {
-                    string tip = entry.Value;
-                    if (lastval == "True" || lastval == "False")
-                    {
-                        toolTips[i - 1].SetToolTip(comboBoxes[i-1], tip);
-                    }
-                    else
-                    {
-                        toolTips[i - 1].SetToolTip(txtOptionValue[i-1], tip);
-                    }
-                }
-                lastval = val;
-            }
-
-            foreach (var entry in player["Graphic Options"])
-            {
-                string name = entry.Name;
-                if (name.Last() != '#')
-                {
-                    lbls[i].Name = name;
-                    toolTips[i].SetToolTip(lbls[i], name);
-                    lbls[i].Text = name;
-                    lbls[i].Visible = true;
-                    lbls[i].AutoSize = true;
-                    this.tableLayoutPanelGraphicOptions.Controls.Add(lbls[i]);
-                    txtOptionValue[i].Name = Name;
-                    txtOptionValue[i].Text = entry.Value;
-                    txtOptionValue[i].Width = 50;
-                    this.tableLayoutPanelGraphicOptions.Controls.Add(txtOptionValue[i]);
-                    i++;
-                }
-                else
-                {
-                    string tip = entry.Value;
-                    toolTips[i - 1].SetToolTip(txtOptionValue[i - 1], tip);
-                }
-            }
-
-            foreach (var entry in player["Race Conditions"])
-            {
-                string name = entry.Name;
-                if (name.Last() != '#')
-                {
-                    lbls[i].Name = name;
-                    toolTips[i].SetToolTip(lbls[i], name);
-                    lbls[i].Text = name;
-                    lbls[i].Visible = true;
-                    lbls[i].AutoSize = true;
-                    this.tableLayoutPanelRaceConditions.Controls.Add(lbls[i]);
-                    txtOptionValue[i].Name = Name;
-                    txtOptionValue[i].Text = entry.Value;
-                    txtOptionValue[i].Width = 50;
-                    this.tableLayoutPanelRaceConditions.Controls.Add(txtOptionValue[i]);
-                    i++;
-                }
-                else
-                {
-                    string tip = entry.Value;
-                    toolTips[i - 1].SetToolTip(txtOptionValue[i - 1], tip);
-                }
-            }
-
-            foreach (var entry in player["Sound Options"])
-            {
-                string name = entry.Name;
-                if (name.Last() != '#')
-                {
-                    lbls[i].Name = name;
-                    toolTips[i].SetToolTip(lbls[i], name);
-                    lbls[i].Text = name;
-                    lbls[i].Visible = true;
-                    lbls[i].AutoSize = true;
-                    this.tableLayoutPanelSoundOptions.Controls.Add(lbls[i]);
-                    txtOptionValue[i].Name = Name;
-                    txtOptionValue[i].Text = entry.Value;
-                    txtOptionValue[i].Width = 100;
-                    this.tableLayoutPanelSoundOptions.Controls.Add(txtOptionValue[i]);
-                    i++;
-                }
-                else
-                {
-                    string tip = entry.Value;
-                    toolTips[i - 1].SetToolTip(txtOptionValue[i - 1], tip);
-                }
-            }
-            */
+            i = tab(player, "DRIVING AIDS",
+                this.tableLayoutPanelDrivingAids,
+                textBoxes,
+                labels,
+                toolTips,
+                comboBoxes,
+                50,
+                i);
+            i = tab(player, "Graphic Options",
+                this.tableLayoutPanelGraphicOptions,
+                textBoxes,
+                labels,
+                toolTips,
+                comboBoxes,
+                50,
+                i);
+            i = tab(player, "Race Conditions",
+                this.tableLayoutPanelRaceConditions,
+                textBoxes,
+                labels,
+                toolTips,
+                comboBoxes,
+                50,
+                i);
+            i = tab(player, "Sound Options",
+                this.tableLayoutPanelSoundOptions,
+                textBoxes,
+                labels,
+                toolTips,
+                comboBoxes,
+                130,
+                i);
         }
     }
 }

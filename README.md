@@ -8,6 +8,6 @@ Aims:
 
 Currently loads c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\player.JSON 
 
-Here is a sample tab
+Here is a (very busy) sample tab
 
 ![](https://github.com/TonyWhitley/rF2_player_editor/blob/master/Documentation/GraphicsOptions.jpg)

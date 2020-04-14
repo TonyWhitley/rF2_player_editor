@@ -5,12 +5,11 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
-namespace WindowsFormsApp1
+namespace rF2_player_editor
 {
-    static class PrormaSC
+    public static class JsonFiles
     {
-        static string filepath = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\player.JSON";
-        public static Dictionary<string, dynamic> ReadJsonFile()
+        public static Dictionary<string, dynamic> ReadJsonFile(string filepath)
         {
             string readResult = string.Empty;
             string writeResult = string.Empty;
@@ -34,7 +33,7 @@ namespace WindowsFormsApp1
             Dictionary<string, dynamic> player = JsonConvert.DeserializeObject <Dictionary<string, dynamic>>(json);
             return player;
         }
-        public static void WriteJsonFile()
+        public static void WriteJsonFile(string filepath)
         {
             string writeResult = string.Empty;
             File.WriteAllText(filepath, writeResult);

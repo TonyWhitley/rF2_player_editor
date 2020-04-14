@@ -7,9 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json.Linq;
 
-namespace WindowsFormsApp1
+namespace rF2_player_editor
 {
     public partial class Form1 : Form
     {
@@ -23,6 +22,8 @@ namespace WindowsFormsApp1
             int width,
             int i)
         {
+            // Fill in tab 'section' with data from that section
+            // in 'player'
             string lastval = null;
 
             foreach (var entry in player[section])

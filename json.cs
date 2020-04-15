@@ -43,7 +43,8 @@ namespace rF2_player_editor
             var tabs = new Dictionary<string, dynamic>();
             foreach (var tabName in rF2PlayerEditorFilter)
             {
-                tabs[tabName.Key] = rF2PlayerEditorFilter[tabName.Key];
+                //foreach (var f in rF2PlayerEditorFilter[tabName.Key].Children())
+                tabs[tabName.Key] = rF2PlayerEditorFilter[tabName.Key].ToObject<Dictionary<string, object>>();
             }
             return tabs;
         }

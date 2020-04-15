@@ -53,7 +53,8 @@ namespace rF2_player_editor
             Console.ReadLine();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(playerFilter));
+            Dictionary<string, dynamic> tabs = JsonFiles.ParseRF2PlayerEditorFilter(playerFilter);
+            Application.Run(new Form1(tabs));
 
         }
     }

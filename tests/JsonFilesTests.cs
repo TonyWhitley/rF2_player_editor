@@ -23,20 +23,38 @@ namespace rF2_player_editor.Tests
         public void ReadrF2PlayerEditorFilterJsonFileTest()
         {
             Dictionary<string, dynamic> player = JsonFiles.ReadJsonFile(rF2PlayerEditorFilterJson);
-            Assert.IsNotNull(player["CHAT"]);
+            Assert.IsNotNull(player["Chat"]);
         }
     }
     [TestClass()]
     public class DictTests
     {
+        private Dictionary<string, dynamic> _getRF2PlayerEditorFilterTabsFromJsonFile()
+        {
+            /// <summary> Read the filter JSON file and split it </summary>
+            Dictionary<string, dynamic> playerFilter = JsonFiles.ReadJsonFile(rF2PlayerEditorFilterJson);
+            Dictionary<string, dynamic> tabs = JsonFiles.ParseRF2PlayerEditorFilter(playerFilter);
+            return tabs;
+        }
+
         readonly string playerJson = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\player.JSON";
         readonly string rF2PlayerEditorFilterJson = "../../rF2PlayerEditorFilter.JSON";
         [TestMethod()]
         public void SplitRF2PlayerEditorFilterJsonFileTest()
         {
-            Dictionary<string, dynamic> playerFilter = JsonFiles.ReadJsonFile(rF2PlayerEditorFilterJson);
-            Dictionary<string, dynamic> tabs = JsonFiles.ParseRF2PlayerEditorFilter(playerFilter);
+            /// <summary> Read the filter JSON file and split it. Check the first tab exists </summary>
+            Dictionary<string, dynamic> tabs = _getRF2PlayerEditorFilterTabsFromJsonFile();
             Assert.IsNotNull(tabs["Chat"]);
+        }
+        [TestMethod()]
+        public void SplitTabsTest()
+        {
+            /// <summary> Split the filter file into tabs and check the contents of the first tab </summary>
+            Dictionary<string, dynamic> tabs = _getRF2PlayerEditorFilterTabsFromJsonFile();
+            Assert.IsNotNull(tabs["Chat"]);
+
+            Dictionary<string, dynamic> tab = tabs["Chat"];
+            Assert.IsNotNull(tab["CHAT"]);
         }
     }
 }

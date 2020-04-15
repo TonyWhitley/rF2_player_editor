@@ -14,12 +14,9 @@ namespace rF2_player_editor
 {
     public partial class Form1 : Form
     {
-        private int tab1(Dictionary<string, dynamic> tabData)
-        {
-            return 0;
-        }
         private int tab(Dictionary<string, dynamic> tabData,
             string section,
+            TabPage tabPage,
             TableLayoutPanel panel,
             TextBox[] textBoxes,
             Label[] labels,
@@ -31,10 +28,16 @@ namespace rF2_player_editor
             // Fill in tab 'section' with data from 'tabData'
             string lastval = null;
 
-            foreach (var entry in tabData)
+            tabPage.Text = section;
+
+            foreach (var entry in tabData[tabData.First().Key].ToObject<Dictionary<string, object>>())
             {
                 string name = entry.Key;
-                string val = entry.Value;
+                string val;
+                if (entry.Value is string)
+                    val = entry.Value;
+                else
+                    val = entry.Value.ToString();
 
                 if (name.Last() != '#')
                 {
@@ -83,16 +86,26 @@ namespace rF2_player_editor
         }
         public Form1(Dictionary<string, dynamic> tabDict)
         {
-            TableLayoutPanel[] panels = new TableLayoutPanel[20]; // # should be entries in tabDict
+            TableLayoutPanel[] panels = new TableLayoutPanel[20]; // should be # entries in tabDict
+            TabPage[] tabPages = new TabPage[20];
             TextBox[] textBoxes = new TextBox[1200];
             Label[] labels = new Label[1200];
             ToolTip[] toolTips = new ToolTip[1200];
             ComboBox[] comboBoxes = new ComboBox[1200];
 
             InitializeComponent();
+
+            tabControl1.ItemSize = new Size(60, 40);    // Set the size of the tabs
+
             for (int u = 0; u < panels.Count(); u++)
             {
                 panels[u] = new TableLayoutPanel();
+                panels[u].ColumnCount = 2;
+                //panels[u].Size = new System.Drawing.Size(228, 200);
+                panels[u].AutoSize = true;
+                panels[u].ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+                tabPages[u] = new TabPage();
+                tabPages[u].Controls.Add(panels[u]);
             }
             for (int u = 0; u < textBoxes.Count(); u++)
             {
@@ -124,12 +137,8 @@ namespace rF2_player_editor
             */
             foreach (var entry in tabDict)
             {
-                // Dictionary<string, dynamic> fred = {"Chat": ""};
-
-                /*
-                Dictionary<string, dynamic> fred = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(entry.Value);
-                i = tab1(JObject.Parse(entry.Value));
                 i = tab(entry.Value, entry.Key,
+                tabPages[panelCount],
                 panels[panelCount],
                 textBoxes,
                 labels,
@@ -137,9 +146,14 @@ namespace rF2_player_editor
                 comboBoxes,
                 50,
                 i);
-                */
+                tabControl1.Controls.Add(tabPages[panelCount]);
                 panelCount++;
             }
+        }
+
+        private void tabSoundOptions_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

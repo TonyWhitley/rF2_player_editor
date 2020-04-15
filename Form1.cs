@@ -7,12 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace rF2_player_editor
 {
     public partial class Form1 : Form
     {
-        private int tab(Dictionary<string, dynamic> player,
+        private int tab1(Dictionary<string, dynamic> tabData)
+        {
+            return 0;
+        }
+        private int tab(Dictionary<string, dynamic> tabData,
             string section,
             TableLayoutPanel panel,
             TextBox[] textBoxes,
@@ -22,13 +28,12 @@ namespace rF2_player_editor
             int width,
             int i)
         {
-            // Fill in tab 'section' with data from that section
-            // in 'player'
+            // Fill in tab 'section' with data from 'tabData'
             string lastval = null;
 
-            foreach (var entry in player[section])
+            foreach (var entry in tabData)
             {
-                string name = entry.Name;
+                string name = entry.Key;
                 string val = entry.Value;
 
                 if (name.Last() != '#')
@@ -76,14 +81,19 @@ namespace rF2_player_editor
             }
             return i;
         }
-        public Form1(Dictionary<string, dynamic> player)
+        public Form1(Dictionary<string, dynamic> tabDict)
         {
+            TableLayoutPanel[] panels = new TableLayoutPanel[20]; // # should be entries in tabDict
             TextBox[] textBoxes = new TextBox[1200];
             Label[] labels = new Label[1200];
             ToolTip[] toolTips = new ToolTip[1200];
             ComboBox[] comboBoxes = new ComboBox[1200];
 
             InitializeComponent();
+            for (int u = 0; u < panels.Count(); u++)
+            {
+                panels[u] = new TableLayoutPanel();
+            }
             for (int u = 0; u < textBoxes.Count(); u++)
             {
                 textBoxes[u] = new TextBox();
@@ -92,9 +102,11 @@ namespace rF2_player_editor
                 comboBoxes[u] = new ComboBox();
             }
 
-            this.tableLayoutPanelChat.RowCount = 12;
+            int panelCount = 0;
             int i = 0;
-            foreach (var entry in player["CHAT"])
+            /*
+            this.tableLayoutPanelChat.RowCount = 12;
+            foreach (var entry in tabData["CHAT"])
             //foreach (Label txt in lbls)
             {
                 // then they're not sorted string name = entry.Name;
@@ -104,44 +116,30 @@ namespace rF2_player_editor
                 labels[i].Visible = true;
                 this.tableLayoutPanelChat.Controls.Add(labels[i]);
                 textBoxes[i].Name = Name;
-                textBoxes[i].Text = player["CHAT"][name];
+                textBoxes[i].Text = tabData["CHAT"][name];
                 textBoxes[i].Width = 200;
                 this.tableLayoutPanelChat.Controls.Add(textBoxes[i]);
                 i++;
             }
+            */
+            foreach (var entry in tabDict)
+            {
+                // Dictionary<string, dynamic> fred = {"Chat": ""};
 
-            i = tab(player, "DRIVING AIDS",
-                this.tableLayoutPanelDrivingAids,
+                /*
+                Dictionary<string, dynamic> fred = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(entry.Value);
+                i = tab1(JObject.Parse(entry.Value));
+                i = tab(entry.Value, entry.Key,
+                panels[panelCount],
                 textBoxes,
                 labels,
                 toolTips,
                 comboBoxes,
                 50,
                 i);
-            i = tab(player, "Graphic Options",
-                this.tableLayoutPanelGraphicOptions,
-                textBoxes,
-                labels,
-                toolTips,
-                comboBoxes,
-                50,
-                i);
-            i = tab(player, "Race Conditions",
-                this.tableLayoutPanelRaceConditions,
-                textBoxes,
-                labels,
-                toolTips,
-                comboBoxes,
-                50,
-                i);
-            i = tab(player, "Sound Options",
-                this.tableLayoutPanelSoundOptions,
-                textBoxes,
-                labels,
-                toolTips,
-                comboBoxes,
-                130,
-                i);
+                */
+                panelCount++;
+            }
         }
     }
 }

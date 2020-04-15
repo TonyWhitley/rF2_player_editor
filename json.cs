@@ -33,6 +33,21 @@ namespace rF2_player_editor
             Dictionary<string, dynamic> player = JsonConvert.DeserializeObject <Dictionary<string, dynamic>>(json);
             return player;
         }
+
+        public static Dictionary<string, dynamic> ParseRF2PlayerEditorFilter(
+            Dictionary<string, dynamic> rF2PlayerEditorFilter)
+        {
+            /// <summary>
+            /// Create a dict of dicts, one for each tab, from the filter file
+            /// </summary>
+            var tabs = new Dictionary<string, dynamic>();
+            foreach (var tabName in rF2PlayerEditorFilter)
+            {
+                tabs[tabName.Key] = rF2PlayerEditorFilter[tabName.Key];
+            }
+            return tabs;
+        }
+
         public static void WriteJsonFile(string filepath)
         {
             string writeResult = string.Empty;

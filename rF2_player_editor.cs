@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json.Linq;
 
 namespace rF2_player_editor
 /// <summary>
@@ -24,7 +20,7 @@ namespace rF2_player_editor
 ///     DRIVING AIDS
 ///     Graphic Options
 ///         Detail levels   these breakdowns should be in rF2PlayerEditorFilter.json
-///         Angles & sizes
+///         Angles and sizes
 ///         Views
 ///     Race Conditions
 ///         General
@@ -37,7 +33,10 @@ namespace rF2_player_editor
 /// </remarks>
 
 {
+    using dict = System.Collections.Generic.Dictionary<string, dynamic>;
+#pragma warning disable IDE1006 // Naming Styles
     static class rF2_player_editor
+#pragma warning restore IDE1006 // Naming Styles
     {
         /// <summary>
         /// The main entry point for the application.
@@ -48,21 +47,19 @@ namespace rF2_player_editor
             string playerJson = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\player.JSON";
             string rF2PlayerEditorFilterJson = "../../../rF2PlayerEditorFilter.JSON";
             //dynamic jobj = PrormaSC.ReadJsonFile();
-            Dictionary<string, dynamic> player = JsonFiles.ReadJsonFile(playerJson);
-            Dictionary<string, dynamic> playerFilter = JsonFiles.ReadJsonFile(rF2PlayerEditorFilterJson);
+            dict player = JsonFiles.ReadJsonFile(playerJson);
+            dict playerFilter = JsonFiles.ReadJsonFile(rF2PlayerEditorFilterJson);
             Console.ReadLine();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Dictionary<string, dynamic> tabs = JsonFiles.ParseRF2PlayerEditorFilter(playerFilter);
+
+            dict tabs = JsonFiles.ParseRF2PlayerEditorFilter(playerFilter);
+            // Copy values from Player.JSON to the dict used to display entries
+            JsonFiles.CopyAllValuesToFilter(ref player, ref tabs);
+
             Application.Run(new Form1(tabs));
 
         }
     }
 }
 
-#if fred
-private void Button1_Click(System.Object sender, System.EventArgs e)
-{
-    SendKeys.Send("Hello world");
-}
-#endif

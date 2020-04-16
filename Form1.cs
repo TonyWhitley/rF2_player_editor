@@ -96,6 +96,9 @@ namespace rF2_player_editor
             // Set the number of columns of label/entry pairs
             panel.ColumnCount = ((entries / maxRows) + 1) * 2;
         }
+        /// <summary>
+        /// The main (only) form
+        /// </summary>
         public Form1(dict tabDict)
         {
             int tabCount = tabDict.Count;

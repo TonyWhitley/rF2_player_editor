@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 using Newtonsoft.Json;
 
@@ -60,7 +61,8 @@ namespace rF2_player_editor
                 string name = entry.Key;
                 foreach (var _key in to_dict[name])
                 {
-                    if (from_dict[name][_key.Name] != null) // If from_dict has the key
+                    if (!_key.Name.EndsWith("#") &&  // If it's not a comment
+                        from_dict[name][_key.Name] != null) // and from_dict has the key
                     {
                         to_dict[name][_key.Name] = from_dict[name][_key.Name];
                     }
@@ -103,6 +105,37 @@ namespace rF2_player_editor
                 dict tabDict = from_dict[entry.Key];
                 CopyDictValues(ref tabDict, ref to_dict);
             }
+        }
+    }
+    /// <summary>
+    /// Class to handle text! Nothing to do with JSON but there's only one method...
+    /// </summary>
+    public static class TextUtils
+    {
+        /// <summary>
+        /// Put \n into 'text' if it goes over 'width' chars
+        /// </summary>
+        /// <param name="text">String to be wrapped</param>
+        /// <param name="width">Max width of resulting text</param>
+        public static string WrapText(string text, int width)
+        {
+            string[] originalWords = text.Split(new string[] { " " },
+                StringSplitOptions.None);
+            StringBuilder result = new StringBuilder();
+            int lineWidth = 0;
+
+            foreach (var word in originalWords)
+            {
+                result.Append(word + " ");
+                lineWidth += word.Length + 1;
+
+                if (lineWidth > width)
+                {
+                    result.Append("\n");
+                    lineWidth = 0;
+                }
+            }
+            return result.ToString();
         }
     }
 }

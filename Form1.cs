@@ -6,6 +6,7 @@ using System.Windows.Forms;
 namespace rF2_player_editor
 {
     using dict = System.Collections.Generic.Dictionary<string, dynamic>;
+
     public partial class Form1 : Form
     {
         private const int numberOfEntries = 1200;
@@ -17,6 +18,7 @@ namespace rF2_player_editor
         private readonly ToolTip[] toolTips = new ToolTip[numberOfEntries];
         private readonly ComboBox[] comboBoxes = new ComboBox[numberOfEntries];
         private int entryCount = 0;
+        public dict tabDictCopy;
 
 
         private void Tab(dict tabData,
@@ -26,9 +28,10 @@ namespace rF2_player_editor
             int width)
         {
             // Fill in tab 'section' with data from 'tabData'
-            int entries = 0;
+            int entriesInThisTab = 0;
             string lastval = null;
 
+            panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             tabPage.Text = section;
 
             foreach (var entry in tabData[tabData.First().Key].ToObject<dict>())
@@ -73,13 +76,16 @@ namespace rF2_player_editor
                         panel.Controls.Add(this.textBoxes[this.entryCount]);
                     }
                     this.entryCount++;
-                    entries++;
+                    entriesInThisTab++;
                 }
                 else
                 {   // JSON keys ending in # are comments, use them for tooltips
                     string tip = entry.Value;
+                    if (tip.Length > 45) // If more than 45 chars wrap every 40
+                        tip = TextUtils.WrapText(tip, 40);
                     this.toolTips[this.entryCount - 1] = new ToolTip();
                     this.toolTips[this.entryCount - 1].SetToolTip(this.labels[this.entryCount - 1], tip);
+                    this.toolTips[this.entryCount - 1].IsBalloon = true;
                     if (lastval == "True" || lastval == "False")
                     {
                         // this.keyCount-1 is not necessarily correct, should find the matching key
@@ -94,7 +100,7 @@ namespace rF2_player_editor
             }
 
             // Set the number of columns of label/entry pairs
-            panel.ColumnCount = ((entries / maxRows) + 1) * 2;
+            panel.ColumnCount = ((entriesInThisTab / maxRows) + 1) * 2;
         }
         /// <summary>
         /// The main (only) form
@@ -106,6 +112,8 @@ namespace rF2_player_editor
             this.tabPages = new TabPage[tabCount];
             int width;
 
+            this.tabDictCopy = tabDict;
+
             InitializeComponent();
 
             for (int u = 0; u < tabCount; u++)
@@ -115,7 +123,6 @@ namespace rF2_player_editor
                     //this.panels[u].Size = new System.Drawing.Size(228, 200);
                     AutoSize = true
                 };
-                this.panels[u].ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
                 this.tabPages[u] = new TabPage();
                 this.tabPages[u].Controls.Add(this.panels[u]);
             }
@@ -134,14 +141,51 @@ namespace rF2_player_editor
                     this.panels[panelCount],
                     width);
 
-                tabControl1.Controls.Add(this.tabPages[panelCount]);
+                TabControl1.Controls.Add(this.tabPages[panelCount]);
                 panels[panelCount].Padding = new System.Windows.Forms.Padding(15, 15, 15, 15); //Padding round the panel
                 panelCount++;
             }
-            tabControl1.Height = 12000 / maxRows;
-            tabControl1.ItemSize = new Size(50, 60);    // Set the size of the tab labels
-            tabControl1.Padding = new System.Drawing.Point(1, 0); //Padding round the tab labels
+            TabControl1.Height = 12000 / maxRows;
+            TabControl1.ItemSize = new Size(50, 60);    // Set the size of the tab labels
+            TabControl1.Padding = new System.Drawing.Point(1, 0); //Padding round the tab labels
             //Form1.Size = Point(100, 200);
+
+            TabControl1.SelectedIndexChanged += new EventHandler(TabControl1_SelectedIndexChanged);
+        }
+        /// <summary>
+        /// Different tab selected, copy all the entries to tabDictCopy
+        /// UNFINISHED.   Well, barely started.
+        /// Idea is that tabDictCopy will be copied to Player.JSON when user
+        /// clicks Save button.
+        /// </summary>
+        private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int tabCount = tabDictCopy.Count;
+
+            int panelCount = 0;
+            foreach (var tabData in tabDictCopy) // HACKERY!!!
+            {
+                dict entriesThing = (dict)tabData.Value; //Value.Values;
+                var section = entriesThing.Keys;
+                foreach (var entries in entriesThing.Values)
+                    foreach (var entry in entries)
+                    {
+                        string name = entry.Name;
+                        string val;
+
+                        if (name.Last() != '#')
+                        { // It's an item, not a comment
+                            if (entry.Value is string)
+                                val = entry.Value;
+                            else
+                                val = entry.Value.ToString();
+                            //this.panels
+                            //this.tabPages
+                        }
+                    }
+                panelCount++;
+            }
+
         }
     }
 }

@@ -80,4 +80,16 @@ namespace rF2_player_editor.Tests
             Assert.AreEqual("Slowing to pit", res);
         }
     }
+    [TestClass()]
+    public class StringTests
+    {
+        [TestMethod()]
+        public void WrapTest()
+        {
+            string input = "Details and visible vehicles will be automatically reduced (by up to half) if framerate is under this threshold (0 to disable)";
+            string wrapped = TextUtils.WrapText(input, 40);
+            Assert.AreEqual("Details and visible vehicles will be automatically \nreduced (by up to half) if framerate is under \nthis threshold (0 to disable) ", wrapped);
+        }
+    }
+
 }

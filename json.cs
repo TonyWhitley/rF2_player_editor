@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Text;
-
-using Newtonsoft.Json;
 
 namespace rF2_player_editor
 {
     using dict = System.Collections.Generic.Dictionary<string, dynamic>;
+    using KVpair = System.Collections.Generic.KeyValuePair<string, dynamic>;
     /// <summary>
     /// Class to handle JSON files!
     /// </summary>
@@ -33,8 +33,8 @@ namespace rF2_player_editor
         public static dict ParseRF2PlayerEditorFilter(
             dict rF2PlayerEditorFilter)
         {
-            var tabs = new dict();
-            foreach (var tabName in rF2PlayerEditorFilter)
+            dict tabs = new dict();
+            foreach (KVpair tabName in rF2PlayerEditorFilter)
             {
                 //foreach (var f in rF2PlayerEditorFilter[tabName.Key].Children())
                 tabs[tabName.Key] = rF2PlayerEditorFilter[tabName.Key].ToObject<dict>();
@@ -56,10 +56,10 @@ namespace rF2_player_editor
         /// </summary>
         public static void CopyDictValues(ref dict from_dict, ref dict to_dict)
         {
-            foreach (var entry in to_dict) // to_dict[to_dict.Keys].ToObject<dict>())
+            foreach (KVpair entry in to_dict) // to_dict[to_dict.Keys].ToObject<dict>())
             {
                 string name = entry.Key;
-                foreach (var _key in to_dict[name])
+                foreach (dynamic _key in to_dict[name])
                 {
                     if (!_key.Name.EndsWith("#") &&  // If it's not a comment
                         from_dict[name][_key.Name] != null) // and from_dict has the key
@@ -76,7 +76,7 @@ namespace rF2_player_editor
         /// </summary>
         public static void CopyAllValuesToFilter(ref dict from_dict, ref dict to_dict)
         {
-            foreach (var entry in to_dict) // to_dict[to_dict.Keys].ToObject<dict>())
+            foreach (KVpair entry in to_dict) // to_dict[to_dict.Keys].ToObject<dict>())
             {
                 dict tabDict = to_dict[entry.Key];
                 CopyDictValues(ref from_dict, ref tabDict);
@@ -88,7 +88,7 @@ namespace rF2_player_editor
         /// </summary>
         public static void CopyAllValuesFromFilter(ref dict from_dict, ref dict to_dict)
         {
-            foreach (var entry in from_dict) // to_dict[to_dict.Keys].ToObject<dict>())
+            foreach (KVpair entry in from_dict) // to_dict[to_dict.Keys].ToObject<dict>())
             {
                 dict tabDict = from_dict[entry.Key];
                 CopyDictValues(ref tabDict, ref to_dict);
@@ -100,7 +100,7 @@ namespace rF2_player_editor
         /// </summary>
         public static void CopyAllValuesFromTab(ref dict from_dict, ref dict to_dict)
         {
-            foreach (var entry in from_dict) // to_dict[to_dict.Keys].ToObject<dict>())
+            foreach (KVpair entry in from_dict) // to_dict[to_dict.Keys].ToObject<dict>())
             {
                 dict tabDict = from_dict[entry.Key];
                 CopyDictValues(ref tabDict, ref to_dict);
@@ -124,7 +124,7 @@ namespace rF2_player_editor
             StringBuilder result = new StringBuilder();
             int lineWidth = 0;
 
-            foreach (var word in originalWords)
+            foreach (string word in originalWords)
             {
                 result.Append(word + " ");
                 lineWidth += word.Length + 1;

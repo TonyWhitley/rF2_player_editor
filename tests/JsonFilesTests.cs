@@ -7,8 +7,8 @@ namespace rF2_player_editor.Tests
     [TestClass()]
     public class JsonFilesTests
     {
-        readonly string playerJson = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\player.JSON";
-        readonly string rF2PlayerEditorFilterJson = "../../rF2PlayerEditorFilter.JSON";
+        private readonly string playerJson = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\player.JSON";
+        private readonly string rF2PlayerEditorFilterJson = "../../rF2PlayerEditorFilter.JSON";
         [TestMethod()]
         public void ReadPlayerJsonFileTest()
         {
@@ -33,8 +33,8 @@ namespace rF2_player_editor.Tests
             return tabs;
         }
 
-        readonly string playerJson = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\player.JSON";
-        readonly string rF2PlayerEditorFilterJson = "../../rF2PlayerEditorFilter.JSON";
+        private readonly string playerJson = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\player.JSON";
+        private readonly string rF2PlayerEditorFilterJson = "../../rF2PlayerEditorFilter.JSON";
         [TestMethod()]
         public void SplitRF2PlayerEditorFilterJsonFileTest()
         {

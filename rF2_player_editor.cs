@@ -36,24 +36,26 @@ namespace rF2_player_editor
     /// </remarks>
 
 #pragma warning disable IDE1006 // Naming Styles
-    static class rF2_player_editor
+    internal static class rF2_player_editor
 #pragma warning restore IDE1006 // Naming Styles
     {
         /// <summary> Get the path of this source file </summary>
-        static string GetThisFilesPath([System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "")
+        private static string GetThisFilesPath([System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "")
         {
             return System.IO.Directory.GetParent(sourceFilePath).ToString();
         }
+
         /// <summary> Get the path of the exe file </summary>
-        static string GetThisExesPath()
+        private static string GetThisExesPath()
         {
             return System.IO.Directory.GetParent(Application.ExecutablePath).ToString();
         }
+
         /// <summary> Get the path of the data file - the same as the exe
         /// if we're running as a program, the same as the source file if
         /// we're running under VS
         /// </summary>
-        static string GetTheDataFilePath()
+        private static string GetTheDataFilePath()
         {
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -69,7 +71,7 @@ namespace rF2_player_editor
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             string playerJson = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\player.JSON";
             string rF2PlayerEditorFilterJson = System.IO.Path.Combine(GetTheDataFilePath(), "rF2PlayerEditorFilter.JSON");

@@ -34,66 +34,73 @@ namespace rF2_player_editor
             panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             tabPage.Text = section;
 
-            foreach (var entry in tabData[tabData.First().Key].ToObject<dict>())
+            foreach (dynamic entry in tabData[tabData.First().Key].ToObject<dict>())
             {
                 string name = entry.Key;
                 string val;
                 if (entry.Value is string)
+                {
                     val = entry.Value;
+                }
                 else
+                {
                     val = entry.Value.ToString();
+                }
 
                 if (name.Last() != '#')
                 {
-                    this.labels[this.entryCount] = new Label
+                    labels[entryCount] = new Label
                     {
                         Name = name,
                         Text = name,
                         AutoSize = true,
                         Visible = true
                     };
-                    panel.Controls.Add(this.labels[this.entryCount]);
+                    panel.Controls.Add(labels[entryCount]);
 
                     if (val == "True" || val == "False")
                     {   // Use a combobox for booleans
-                        this.comboBoxes[this.entryCount] = new ComboBox
+                        comboBoxes[entryCount] = new ComboBox
                         {
                             Name = name
                         };
-                        this.comboBoxes[this.entryCount].Items.AddRange(new object[] { "True", "False" });
-                        this.comboBoxes[this.entryCount].Text = val;
-                        this.comboBoxes[this.entryCount].Width = width;
-                        panel.Controls.Add(this.comboBoxes[this.entryCount]);
+                        comboBoxes[entryCount].Items.AddRange(new object[] { "True", "False" });
+                        comboBoxes[entryCount].Text = val;
+                        comboBoxes[entryCount].Width = width;
+                        panel.Controls.Add(comboBoxes[entryCount]);
                     }
                     else
                     {   // Use a textbox for general values
-                        this.textBoxes[this.entryCount] = new TextBox
+                        textBoxes[entryCount] = new TextBox
                         {
                             Name = name,
                             Text = val,
                             Width = width
                         };
-                        panel.Controls.Add(this.textBoxes[this.entryCount]);
+                        panel.Controls.Add(textBoxes[entryCount]);
                     }
-                    this.entryCount++;
+                    entryCount++;
                     entriesInThisTab++;
                 }
                 else
                 {   // JSON keys ending in # are comments, use them for tooltips
                     string tip = entry.Value;
                     if (tip.Length > 45) // If more than 45 chars wrap every 40
+                    {
                         tip = TextUtils.WrapText(tip, 40);
-                    this.toolTips[this.entryCount - 1] = new ToolTip();
-                    this.toolTips[this.entryCount - 1].SetToolTip(this.labels[this.entryCount - 1], tip);
-                    this.toolTips[this.entryCount - 1].IsBalloon = true;
+                    }
+
+                    toolTips[entryCount - 1] = new ToolTip();
+                    toolTips[entryCount - 1].SetToolTip(labels[entryCount - 1], tip);
+                    toolTips[entryCount - 1].IsBalloon = true;
                     if (lastval == "True" || lastval == "False")
                     {
                         // this.keyCount-1 is not necessarily correct, should find the matching key
-                        this.toolTips[this.entryCount - 1].SetToolTip(this.comboBoxes[this.entryCount - 1], tip);
+                        toolTips[entryCount - 1].SetToolTip(comboBoxes[entryCount - 1], tip);
                     }
                     else
                     {
-                        this.toolTips[this.entryCount - 1].SetToolTip(this.textBoxes[this.entryCount - 1], tip);
+                        toolTips[entryCount - 1].SetToolTip(textBoxes[entryCount - 1], tip);
                     }
                 }
                 lastval = val;
@@ -108,40 +115,44 @@ namespace rF2_player_editor
         public Form1(dict tabDict)
         {
             int tabCount = tabDict.Count;
-            this.panels = new TableLayoutPanel[tabCount];
-            this.tabPages = new TabPage[tabCount];
+            panels = new TableLayoutPanel[tabCount];
+            tabPages = new TabPage[tabCount];
             int width;
 
-            this.tabDictCopy = tabDict;
+            tabDictCopy = tabDict;
 
             InitializeComponent();
 
             for (int u = 0; u < tabCount; u++)
             {
-                this.panels[u] = new TableLayoutPanel
+                panels[u] = new TableLayoutPanel
                 {
                     //this.panels[u].Size = new System.Drawing.Size(228, 200);
                     AutoSize = true
                 };
-                this.tabPages[u] = new TabPage();
-                this.tabPages[u].Controls.Add(this.panels[u]);
+                tabPages[u] = new TabPage();
+                tabPages[u].Controls.Add(panels[u]);
             }
 
             int panelCount = 0;
-            foreach (var entry in tabDict)
+            foreach (System.Collections.Generic.KeyValuePair<string, dynamic> entry in tabDict)
             {
                 if (entry.Key == "Chat")
+                {
                     width = 150;
+                }
                 else
+                {
                     width = 60;
+                }
 
                 Tab(entry.Value,
                     entry.Key,
-                    this.tabPages[panelCount],
-                    this.panels[panelCount],
+                    tabPages[panelCount],
+                    panels[panelCount],
                     width);
 
-                TabControl1.Controls.Add(this.tabPages[panelCount]);
+                TabControl1.Controls.Add(tabPages[panelCount]);
                 panels[panelCount].Padding = new System.Windows.Forms.Padding(15, 15, 15, 15); //Padding round the panel
                 panelCount++;
             }
@@ -163,12 +174,13 @@ namespace rF2_player_editor
             int tabCount = tabDictCopy.Count;
 
             int panelCount = 0;
-            foreach (var tabData in tabDictCopy) // HACKERY!!!
+            foreach (System.Collections.Generic.KeyValuePair<string, dynamic> tabData in tabDictCopy) // HACKERY!!!
             {
                 dict entriesThing = (dict)tabData.Value; //Value.Values;
-                var section = entriesThing.Keys;
-                foreach (var entries in entriesThing.Values)
-                    foreach (var entry in entries)
+                dict.KeyCollection section = entriesThing.Keys;
+                foreach (dynamic entries in entriesThing.Values)
+                {
+                    foreach (dynamic entry in entries)
                     {
                         string name = entry.Name;
                         string val;
@@ -176,13 +188,19 @@ namespace rF2_player_editor
                         if (name.Last() != '#')
                         { // It's an item, not a comment
                             if (entry.Value is string)
+                            {
                                 val = entry.Value;
+                            }
                             else
+                            {
                                 val = entry.Value.ToString();
+                            }
                             //this.panels
                             //this.tabPages
                         }
                     }
+                }
+
                 panelCount++;
             }
 

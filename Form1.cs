@@ -18,8 +18,6 @@ namespace rF2_player_editor
         private readonly ToolTip[] toolTips = new ToolTip[numberOfEntries];
         private readonly ComboBox[] comboBoxes = new ComboBox[numberOfEntries];
         private int entryCount = 0;
-        public dict tabDictCopy;
-
 
         private void Tab(dict tabData,
             string section,
@@ -67,6 +65,7 @@ namespace rF2_player_editor
                         comboBoxes[entryCount].Items.AddRange(new object[] { "True", "False" });
                         comboBoxes[entryCount].Text = val;
                         comboBoxes[entryCount].Width = width;
+                        comboBoxes[entryCount].Leave += new EventHandler(ComboBoxValueChanged);
                         panel.Controls.Add(comboBoxes[entryCount]);
                     }
                     else
@@ -77,6 +76,7 @@ namespace rF2_player_editor
                             Text = val,
                             Width = width
                         };
+                        textBoxes[entryCount].Leave += new EventHandler(TextBoxValueChanged);
                         panel.Controls.Add(textBoxes[entryCount]);
                     }
                     entryCount++;
@@ -109,7 +109,26 @@ namespace rF2_player_editor
             // Set the number of columns of label/entry pairs
             panel.ColumnCount = ((entriesInThisTab / maxRows) + 1) * 2;
         }
+
+        /// <summary> Event handler when a value is changed </summary>
+        private void ComboBoxValueChanged(object sender, System.EventArgs e)
+        {
+            //write your event code here
+            string key = ((System.Windows.Forms.Control)sender).Name;
+            string value = ((System.Windows.Forms.ComboBox)sender).Text;
+            bool ret = WriteDict.WriteValue(key, value);
+        }
+
         /// <summary>
+        /// <summary> Event handler when a value is changed </summary>
+        private void TextBoxValueChanged(object sender, System.EventArgs e)
+        {
+            //write your event code here
+            string key = ((System.Windows.Forms.Control)sender).Name;
+            string value = ((System.Windows.Forms.TextBox)sender).Text;
+            bool ret = WriteDict.WriteValue(key, value);
+        }
+
         /// The main (only) form
         /// </summary>
         public Form1(dict tabDict)
@@ -118,8 +137,6 @@ namespace rF2_player_editor
             panels = new TableLayoutPanel[tabCount];
             tabPages = new TabPage[tabCount];
             int width;
-
-            tabDictCopy = tabDict;
 
             InitializeComponent();
 
@@ -171,35 +188,11 @@ namespace rF2_player_editor
         /// </summary>
         private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int tabCount = tabDictCopy.Count;
+            return;
+
+            int tabCount = WriteDict.writeDict.Count;
 
             int panelCount = 0;
-            foreach (System.Collections.Generic.KeyValuePair<string, dynamic> tabData in tabDictCopy) // HACKERY!!!
-            {
-                dict entriesThing = (dict)tabData.Value; //Value.Values;
-                dict.KeyCollection section = entriesThing.Keys;
-                foreach (dynamic entries in entriesThing.Values)
-                {
-                    foreach (dynamic entry in entries)
-                    {
-                        string name = entry.Name;
-                        string val;
-
-                        if (name.Last() != '#')
-                        { // It's an item, not a comment
-                            if (entry.Value is string)
-                            {
-                                val = entry.Value;
-                            }
-                            else
-                            {
-                                val = entry.Value.ToString();
-                            }
-                            //this.panels
-                            //this.tabPages
-                        }
-                    }
-                }
 
                 panelCount++;
             }

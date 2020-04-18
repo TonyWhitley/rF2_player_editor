@@ -79,6 +79,22 @@ namespace rF2_player_editor.Tests
             res = tabs["Chat"]["CHAT"]["Quick Chat #1"];
             Assert.AreEqual("Slowing to pit", res);
         }
+        [TestMethod()]
+        public void WriteFailTest()
+        {
+            dict tabs = JsonFiles.ReadJsonFile(playerJson);
+            WriteDict.writeDict = tabs;
+            bool ret = WriteDict.WriteValue("HELLO", "WORLD");
+            Assert.IsFalse(ret);
+        }
+        [TestMethod()]
+        public void WriteSucceedTest()
+        {
+            dict tabs = JsonFiles.ReadJsonFile(playerJson);
+            WriteDict.writeDict = tabs;
+            bool ret = WriteDict.WriteValue("Quick Chat #1", "Please pass");
+            Assert.IsTrue(ret);
+        }
     }
     [TestClass()]
     public class StringTests
@@ -91,5 +107,4 @@ namespace rF2_player_editor.Tests
             Assert.AreEqual("Details and visible vehicles will be automatically \nreduced (by up to half) if framerate is under \nthis threshold (0 to disable) ", wrapped);
         }
     }
-
 }

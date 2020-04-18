@@ -77,7 +77,8 @@ namespace rF2_player_editor
             string rF2PlayerEditorFilterJson = System.IO.Path.Combine(GetTheDataFilePath(), "rF2PlayerEditorFilter.JSON");
             dict player = JsonFiles.ReadJsonFile(playerJson);
             dict playerFilter = JsonFiles.ReadJsonFile(rF2PlayerEditorFilterJson);
-            Console.ReadLine();
+            WriteDict.writeDict = player;
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -86,6 +87,7 @@ namespace rF2_player_editor
             JsonFiles.CopyAllValuesToFilter(ref player, ref tabs);
 
             Application.Run(new Form1(tabs));
+            bool fred = WriteDict.changed;
         }
     }
 }

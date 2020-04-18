@@ -107,6 +107,40 @@ namespace rF2_player_editor
             }
         }
     }
+
+
+    public class WriteDict
+    {
+        public static dict writeDict;
+        public static bool changed = false;
+
+        /// <summary>
+        /// Write value to the key found somewhere in the dict
+        /// </summary>
+        /// <param name="key">key name</param>
+        /// <param name="value">the text to be written</param>
+        /// <returns></returns>
+        public static bool WriteValue(string key, string value)
+        {
+            foreach (System.Collections.Generic.KeyValuePair<string, dynamic> tabData in writeDict) // HACKERY!!!
+            {
+                //var entriesThing = tabData.Value; //Value.Values;
+                //var group = ((Newtonsoft.Json.Linq.JProperty)((Newtonsoft.Json.Linq.JContainer)entriesThing).First).Name;
+                //var entriesX = ((Newtonsoft.Json.Linq.JContainer)entriesThing).First.First;
+                string group = tabData.Key;
+                dict fred = tabData.Value.ToObject<dict>();
+                /*dict fred = entriesX.ToObject<dict>();*/
+                if (fred.ContainsKey(key))
+                {
+                    writeDict[group][key] = value;
+                    changed = true;
+                    return true;
+                }
+            }
+            return false; // didn't find the key
+        }
+    }
+
     /// <summary>
     /// Class to handle text! Nothing to do with JSON but there's only one method...
     /// </summary>

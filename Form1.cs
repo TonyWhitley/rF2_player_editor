@@ -180,12 +180,32 @@ namespace rF2_player_editor
 
             TabControl1.SelectedIndexChanged += new EventHandler(TabControl1_SelectedIndexChanged);
         }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (WriteDict.changed)
+            {
+                string message = String.Format(
+                    "You have made changes, do you want to save them in {0}?",
+                    Config.playerJson);
+                const string caption = "Closing down";
+                var result = MessageBox.Show(message, caption,
+                                             MessageBoxButtons.YesNo,
+                                             MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    rF2_player_editor.saveChanges();
+                }
+            }
+        }
+
         /// <summary>
-        /// Different tab selected, copy all the entries to tabDictCopy
-        /// UNFINISHED.   Well, barely started.
-        /// Idea is that tabDictCopy will be copied to Player.JSON when user
-        /// clicks Save button.
-        /// </summary>
+                 /// Different tab selected, copy all the entries to tabDictCopy
+                 /// UNFINISHED.   Well, barely started.
+                 /// Idea is that tabDictCopy will be copied to Player.JSON when user
+                 /// clicks Save button.
+                 /// </summary>
         private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             return;
@@ -195,8 +215,8 @@ namespace rF2_player_editor
             int panelCount = 0;
 
                 panelCount++;
-            }
-
         }
+
     }
 }
+

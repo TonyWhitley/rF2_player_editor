@@ -45,10 +45,15 @@ namespace rF2_player_editor
         /// <summary>
         /// Write a dict to JSON file.
         /// </summary>
-        public static void WriteJsonFile(string filepath)
+        public static void WriteJsonFile(string filepath, dict dictionary)
         {
-            string writeResult = string.Empty;
-            File.WriteAllText(filepath, writeResult);
+            string JsonString = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
+            JsonString = JsonString.Replace("\": ", "\":");
+            JsonString = JsonString.Replace("/", "\\/");
+            JsonString = JsonString.Replace("Look Up\\/Down Angle", "Look Up/Down Angle");
+            JsonString = JsonString.Replace("pixel\\/seconds", "pixel/seconds");
+
+            File.WriteAllText(filepath, JsonString);
         }
 
         /// <summary>

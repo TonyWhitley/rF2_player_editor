@@ -35,24 +35,25 @@
             // 
             // TabControl1
             // 
-            this.TabControl1.Location = new System.Drawing.Point(20, 10);
-            this.TabControl1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TabControl1.Location = new System.Drawing.Point(24, 12);
+            this.TabControl1.Margin = new System.Windows.Forms.Padding(2);
             this.TabControl1.Name = "TabControl1";
             this.TabControl1.SelectedIndex = 0;
-            this.TabControl1.Size = new System.Drawing.Size(1365, 1082);
+            this.TabControl1.Size = new System.Drawing.Size(1668, 1298);
             this.TabControl1.TabIndex = 0;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1411, 1102);
+            this.ClientSize = new System.Drawing.Size(1725, 1322);
             this.Controls.Add(this.TabControl1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "rFactor 2 Player editor";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.ResumeLayout(false);
 
         }

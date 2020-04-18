@@ -35,10 +35,12 @@ namespace rF2_player_editor
     ///     Sound Options
     /// </remarks>
 
-#pragma warning disable IDE1006 // Naming Styles
-    internal static class rF2_player_editor
-#pragma warning restore IDE1006 // Naming Styles
+    public class Config
     {
+        public static string playerJson = @"player.JSON";
+        public static string playerJsonPath = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\" + playerJson;
+        public static string rF2PlayerEditorFilterJson = System.IO.Path.Combine(GetTheDataFilePath(), "rF2PlayerEditorFilter.JSON");
+
         /// <summary> Get the path of this source file </summary>
         private static string GetThisFilesPath([System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "")
         {
@@ -67,17 +69,23 @@ namespace rF2_player_editor
             }
         }
 
+    }
+#pragma warning disable IDE1006 // Naming Styles
+    internal static class rF2_player_editor
+#pragma warning restore IDE1006 // Naming Styles
+    {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         private static void Main()
         {
-            string playerJson = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\player.JSON";
-            string rF2PlayerEditorFilterJson = System.IO.Path.Combine(GetTheDataFilePath(), "rF2PlayerEditorFilter.JSON");
-            dict player = JsonFiles.ReadJsonFile(playerJson);
-            dict playerFilter = JsonFiles.ReadJsonFile(rF2PlayerEditorFilterJson);
+            dict player = JsonFiles.ReadJsonFile(Config.playerJsonPath);
+            dict playerFilter = JsonFiles.ReadJsonFile(Config.rF2PlayerEditorFilterJson);
             WriteDict.writeDict = player;
+            // Get Player.JSON path from the file then remove it from the dictionary
+            Config.playerJsonPath = playerFilter["Player.JSON"];
+            playerFilter.Remove("Player.JSON");
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -87,7 +95,10 @@ namespace rF2_player_editor
             JsonFiles.CopyAllValuesToFilter(ref player, ref tabs);
 
             Application.Run(new Form1(tabs));
-            bool fred = WriteDict.changed;
+        }
+        public static void saveChanges()
+        {
+            JsonFiles.WriteJsonFile(Config.playerJsonPath, WriteDict.writeDict);
         }
     }
 }

@@ -10,16 +10,82 @@ namespace rF2_player_editor.Tests
         private readonly string playerJson = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\player.JSON";
         private readonly string rF2PlayerEditorFilterJson = "../../rF2PlayerEditorFilter.JSON";
         [TestMethod()]
+        /// <summary>Read Player.JSON</summary>
         public void ReadPlayerJsonFileTest()
         {
             dict player = JsonFiles.ReadJsonFile(playerJson);
             Assert.IsNotNull(player["CHAT"]);
         }
         [TestMethod()]
+        ///<summary>Read the config file</summary>
         public void ReadrF2PlayerEditorFilterJsonFileTest()
         {
             dict player = JsonFiles.ReadJsonFile(rF2PlayerEditorFilterJson);
             Assert.IsNotNull(player["Chat"]);
+        }
+        [TestMethod()]
+        ///<summary>
+        ///Text to JSON test
+        ///Convert text back to an object, serialize the object, check that the
+        ///format is as expected
+        ///</summary>
+        public void TextToJsonTest()
+        {
+            string key;
+            string value;
+            string testString;
+            object JsonObj;
+            dict testDict = new dict { };
+
+            key = "Quick Chat #10";
+            value = "true";
+            JsonObj = WriteDict.TextToObject(value);
+            Assert.AreEqual(true, JsonObj);
+            testDict[key] = JsonObj;
+            testString = JsonFiles.SerializeObject(testDict);
+            Assert.AreEqual("{\r\n  \"Quick Chat #10\":true\r\n}", testString);
+            testDict.Remove(key);
+
+            key = "Antilock Brakes";
+            value = "0";
+            JsonObj = WriteDict.TextToObject(value);
+            Assert.AreEqual((long)0, JsonObj);
+            testDict[key] = JsonObj;
+            testString = JsonFiles.SerializeObject(testDict);
+            Assert.AreEqual("{\r\n  \"Antilock Brakes\":0\r\n}", testString);
+            testDict.Remove(key);
+
+            value = "Some text";
+            JsonObj = WriteDict.TextToObject(value);
+            Assert.AreEqual(value, JsonObj);
+
+            key = "Quick Chat #10";
+            value = "/vote yes";
+            JsonObj = WriteDict.TextToObject(value);
+            Assert.AreEqual(value, JsonObj);
+            testDict[key] = JsonObj;
+            testString = JsonFiles.SerializeObject(testDict);
+            Assert.AreEqual("{\r\n  \"Quick Chat #10\":\"\\/vote yes\"\r\n}", testString);
+            testDict.Remove(key);
+
+            key = "Look Up/Down Angle";
+            value = "0";
+            JsonObj = WriteDict.TextToObject(value);
+            Assert.AreEqual((long)0, JsonObj);
+            testDict[key] = JsonObj;
+            testString = JsonFiles.SerializeObject(testDict);
+            Assert.AreEqual("{\r\n  \"Look Up/Down Angle\":0\r\n}", testString);
+            testDict.Remove(key);
+
+
+            key = "pixel/seconds";
+            value = "550";
+            JsonObj = WriteDict.TextToObject(value);
+            Assert.AreEqual((long)550, JsonObj);
+            testDict[key] = JsonObj;
+            testString = JsonFiles.SerializeObject(testDict);
+            Assert.AreEqual("{\r\n  \"pixel/seconds\":550\r\n}", testString);
+            testDict.Remove(key);
         }
     }
     [TestClass()]

@@ -34,6 +34,8 @@ namespace rF2_player_editor
             dict rF2PlayerEditorFilter)
         {
             dict tabs = new dict();
+            // Throw away the prepended Player.JSON key
+            rF2PlayerEditorFilter.Remove("Player.JSON");
             foreach (KVpair tabName in rF2PlayerEditorFilter)
             {
                 //foreach (var f in rF2PlayerEditorFilter[tabName.Key].Children())
@@ -43,17 +45,52 @@ namespace rF2_player_editor
         }
 
         /// <summary>
-        /// Write a dict to JSON file.
+        /// Tweak JSON to rF2's JSON format
         /// </summary>
-        public static void WriteJsonFile(string filepath, dict dictionary)
+        /// <param name="JsonString"></param>
+        /// <returns>rF2 format JSON string</returns>
+        private static string JsonToRF2(string JsonString)
         {
-            string JsonString = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
             JsonString = JsonString.Replace("\": ", "\":");
             JsonString = JsonString.Replace("/", "\\/");
             JsonString = JsonString.Replace("Look Up\\/Down Angle", "Look Up/Down Angle");
             JsonString = JsonString.Replace("pixel\\/seconds", "pixel/seconds");
-
+            return JsonString;
+        }
+        /// <summary>
+        /// Write a dict to JSON file.
+        /// </summary>
+        public static void WriteJsonFile(string filepath, dict dictionary)
+        {
+            foreach (KVpair section in dictionary)
+            {
+                foreach (dynamic entry in dictionary[section.Key])
+                {
+                    if (entry.Name.Contains(" Version"))
+                    { // Version entries are strings not doubles "
+                        dictionary[section.Key][entry.Name] = entry.Value;
+                    }
+                    else
+                    {
+                        dictionary[section.Key][entry.Name] = WriteDict.TextToObject(entry.Value.ToString());
+                    }
+                }
+            }
+            string JsonString = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
+            JsonString = JsonToRF2(JsonString);
             File.WriteAllText(filepath, JsonString);
+        }
+
+        /// <summary>
+        /// Serialize object into a JSON string
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>JSON string</returns>
+        public static string SerializeObject(object obj)
+        {
+            string JsonString = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            JsonString = JsonToRF2(JsonString);
+            return JsonString;
         }
 
         /// <summary>
@@ -114,11 +151,41 @@ namespace rF2_player_editor
     }
 
 
-    public class WriteDict
+    public static class WriteDict
     {
         public static dict writeDict;
         public static bool changed = false;
 
+        /// <summary>
+        /// Translate a string to an object
+        /// </summary>
+        /// <param name="value">int, bool, float, string</param>
+        /// <returns></returns>
+        public static object TextToObject(string value)
+        {
+            bool boolResult;
+            if (bool.TryParse(value, out boolResult))
+            {
+                return boolResult;
+            }
+            long longResult;
+            if (long.TryParse(value, out longResult))
+            {
+                return longResult;
+            }
+            double doubleResult;
+            if (double.TryParse(value, out doubleResult))
+            {
+                return doubleResult;
+            }
+            float floatResult;
+            if (float.TryParse(value, out floatResult))
+            {
+                return floatResult;
+            }
+            
+            return value;
+        }
         /// <summary>
         /// Write value to the key found somewhere in the dict
         /// </summary>
@@ -129,12 +196,8 @@ namespace rF2_player_editor
         {
             foreach (System.Collections.Generic.KeyValuePair<string, dynamic> tabData in writeDict) // HACKERY!!!
             {
-                //var entriesThing = tabData.Value; //Value.Values;
-                //var group = ((Newtonsoft.Json.Linq.JProperty)((Newtonsoft.Json.Linq.JContainer)entriesThing).First).Name;
-                //var entriesX = ((Newtonsoft.Json.Linq.JContainer)entriesThing).First.First;
                 string group = tabData.Key;
                 dict fred = tabData.Value.ToObject<dict>();
-                /*dict fred = entriesX.ToObject<dict>();*/
                 if (fred.ContainsKey(key))
                 {
                     writeDict[group][key] = value;

@@ -35,7 +35,7 @@ namespace rF2_player_editor
     ///     Sound Options
     /// </remarks>
 
-    public class Config
+    public static class Config
     {
         public static string playerJson = @"player.JSON";
         public static string playerJsonPath = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\" + playerJson;
@@ -71,7 +71,9 @@ namespace rF2_player_editor
 
     }
 #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable S101 // Naming Styles
     internal static class rF2_player_editor
+#pragma warning restore S101 // Naming Styles
 #pragma warning restore IDE1006 // Naming Styles
     {
         /// <summary>
@@ -96,7 +98,7 @@ namespace rF2_player_editor
 
             Application.Run(new Form1(tabs));
         }
-        public static void saveChanges()
+        public static void SaveChanges()
         {
             JsonFiles.WriteJsonFile(Config.playerJsonPath, WriteDict.writeDict);
         }

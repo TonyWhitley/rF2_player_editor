@@ -116,19 +116,19 @@ namespace rF2_player_editor
             //write your event code here
             string key = ((System.Windows.Forms.Control)sender).Name;
             string value = ((System.Windows.Forms.ComboBox)sender).Text;
-            bool ret = WriteDict.WriteValue(key, value);
+            WriteDict.WriteValue(key, value);
         }
 
-        /// <summary>
         /// <summary> Event handler when a value is changed </summary>
         private void TextBoxValueChanged(object sender, System.EventArgs e)
         {
             //write your event code here
             string key = ((System.Windows.Forms.Control)sender).Name;
             string value = ((System.Windows.Forms.TextBox)sender).Text;
-            bool ret = WriteDict.WriteValue(key, value);
+            WriteDict.WriteValue(key, value);
         }
 
+        /// <summary>
         /// The main (only) form
         /// </summary>
         public Form1(dict tabDict)
@@ -144,7 +144,6 @@ namespace rF2_player_editor
             {
                 panels[u] = new TableLayoutPanel
                 {
-                    //this.panels[u].Size = new System.Drawing.Size(228, 200);
                     AutoSize = true
                 };
                 tabPages[u] = new TabPage();
@@ -176,9 +175,6 @@ namespace rF2_player_editor
             TabControl1.Height = 12000 / maxRows;
             TabControl1.ItemSize = new Size(50, 60);    // Set the size of the tab labels
             TabControl1.Padding = new System.Drawing.Point(1, 0); //Padding round the tab labels
-            //Form1.Size = Point(100, 200);
-
-            TabControl1.SelectedIndexChanged += new EventHandler(TabControl1_SelectedIndexChanged);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -195,28 +191,10 @@ namespace rF2_player_editor
 
                 if (result == DialogResult.Yes)
                 {
-                    rF2_player_editor.saveChanges();
+                    rF2_player_editor.SaveChanges();
                 }
             }
         }
-
-        /// <summary>
-                 /// Different tab selected, copy all the entries to tabDictCopy
-                 /// UNFINISHED.   Well, barely started.
-                 /// Idea is that tabDictCopy will be copied to Player.JSON when user
-                 /// clicks Save button.
-                 /// </summary>
-        private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            return;
-
-            int tabCount = WriteDict.writeDict.Count;
-
-            int panelCount = 0;
-
-                panelCount++;
-        }
-
     }
 }
 

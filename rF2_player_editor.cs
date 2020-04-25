@@ -34,15 +34,22 @@ namespace rF2_player_editor
     ///         RPLAY
     ///     Sound Options
     /// </remarks>
-
     public static class Config
     {
         public static string playerJson = @"player.JSON";
-        public static string playerJsonPath = @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\" + playerJson;
-        public static string rF2PlayerEditorFilterJson = System.IO.Path.Combine(GetTheDataFilePath(), "rF2PlayerEditorFilter.JSON");
+
+        public static string playerJsonPath =
+            @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\" +
+            playerJson;
+
+        public static string rF2PlayerEditorFilterJson =
+            System.IO.Path.Combine(GetTheDataFilePath(),
+                "rF2PlayerEditorFilter.JSON");
 
         /// <summary> Get the path of this source file </summary>
-        private static string GetThisFilesPath([System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "")
+        private static string GetThisFilesPath(
+            [System.Runtime.CompilerServices.CallerFilePath]
+            string sourceFilePath = "")
         {
             return System.IO.Directory.GetParent(sourceFilePath).ToString();
         }
@@ -50,7 +57,8 @@ namespace rF2_player_editor
         /// <summary> Get the path of the exe file </summary>
         private static string GetThisExesPath()
         {
-            return System.IO.Directory.GetParent(Application.ExecutablePath).ToString();
+            return System.IO.Directory.GetParent(Application.ExecutablePath)
+                .ToString();
         }
 
         /// <summary> Get the path of the data file - the same as the exe
@@ -68,7 +76,6 @@ namespace rF2_player_editor
                 return GetThisExesPath();
             }
         }
-
     }
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable S101 // Naming Styles
@@ -79,11 +86,15 @@ namespace rF2_player_editor
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+        /// <param name="script">The path to the JSON file containing edits.</param>
+        /// <param name="PlayerJson">The Player.JSON file to be edited</param>
         [STAThread]
-        private static void Main()
+        private static void
+            Main() //(System.IO.FileInfo script, System.IO.FileInfo PlayerJson)
         {
-            dict player = JsonFiles.ReadJsonFile(Config.playerJsonPath);
-            dict playerFilter = JsonFiles.ReadJsonFile(Config.rF2PlayerEditorFilterJson);
+            var player = JsonFiles.ReadJsonFile(Config.playerJsonPath);
+            var playerFilter =
+                JsonFiles.ReadJsonFile(Config.rF2PlayerEditorFilterJson);
             WriteDict.writeDict = player;
             // Get Player.JSON path from the file then remove it from the dictionary
             Config.playerJsonPath = playerFilter["Player.JSON"];
@@ -92,16 +103,16 @@ namespace rF2_player_editor
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            dict tabs = JsonFiles.ParseRF2PlayerEditorFilter(playerFilter);
+            var tabs = JsonFiles.ParseRF2PlayerEditorFilter(playerFilter);
             // Copy values from Player.JSON to the dict used to display entries
             JsonFiles.CopyAllValuesToFilter(ref player, ref tabs);
 
             Application.Run(new Form1(tabs));
         }
+
         public static void SaveChanges()
         {
             JsonFiles.WriteJsonFile(Config.playerJsonPath, WriteDict.writeDict);
         }
     }
 }
-

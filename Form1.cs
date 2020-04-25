@@ -7,17 +7,18 @@ namespace rF2_player_editor
 {
     using dict = System.Collections.Generic.Dictionary<string, dynamic>;
 
+    /// <summary>
+    /// The main form
+    /// </summary>
     public partial class Form1 : Form
     {
-        private const int numberOfEntries = 1200;
-        private const int maxRows = 20;
-        private readonly TableLayoutPanel[] panels;
-        private readonly TabPage[] tabPages;
-        private readonly TextBox[] textBoxes = new TextBox[numberOfEntries];
-        private readonly Label[] labels = new Label[numberOfEntries];
-        private readonly ToolTip[] toolTips = new ToolTip[numberOfEntries];
-        private readonly ComboBox[] comboBoxes = new ComboBox[numberOfEntries];
-        private int entryCount = 0;
+        private const int NumberOfEntries = 1200;
+        private const int MaxRows = 20;
+        private readonly TextBox[] _textBoxes = new TextBox[NumberOfEntries];
+        private readonly Label[] _labels = new Label[NumberOfEntries];
+        private readonly ToolTip[] _toolTips = new ToolTip[NumberOfEntries];
+        private readonly ComboBox[] _comboBoxes = new ComboBox[NumberOfEntries];
+        private int _entryCount;
 
         private void Tab(dict tabData,
             string section,
@@ -26,13 +27,13 @@ namespace rF2_player_editor
             int width)
         {
             // Fill in tab 'section' with data from 'tabData'
-            int entriesInThisTab = 0;
+            var entriesInThisTab = 0;
             string lastval = null;
 
             panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             tabPage.Text = section;
 
-            foreach (dynamic entry in tabData[tabData.First().Key].ToObject<dict>())
+            foreach (var entry in tabData[tabData.First().Key].ToObject<dict>())
             {
                 string name = entry.Key;
                 string val;
@@ -47,84 +48,93 @@ namespace rF2_player_editor
 
                 if (name.Last() != '#')
                 {
-                    labels[entryCount] = new Label
+                    _labels[_entryCount] = new Label
                     {
                         Name = name,
                         Text = name,
                         AutoSize = true,
                         Visible = true
                     };
-                    panel.Controls.Add(labels[entryCount]);
+                    panel.Controls.Add(_labels[_entryCount]);
 
                     if (val == "True" || val == "False")
-                    {   // Use a combobox for booleans
-                        comboBoxes[entryCount] = new ComboBox
+                    {
+                        // Use a combobox for booleans
+                        _comboBoxes[_entryCount] = new ComboBox
                         {
                             Name = name
                         };
-                        comboBoxes[entryCount].Items.AddRange(new object[] { "True", "False" });
-                        comboBoxes[entryCount].Text = val;
-                        comboBoxes[entryCount].Width = width;
-                        comboBoxes[entryCount].Leave += new EventHandler(ComboBoxValueChanged);
-                        panel.Controls.Add(comboBoxes[entryCount]);
+                        _comboBoxes[_entryCount].Items.AddRange(new object[]
+                            {"True", "False"});
+                        _comboBoxes[_entryCount].Text = val;
+                        _comboBoxes[_entryCount].Width = width;
+                        _comboBoxes[_entryCount].Leave += ComboBoxValueChanged;
+                        panel.Controls.Add(_comboBoxes[_entryCount]);
                     }
                     else
-                    {   // Use a textbox for general values
-                        textBoxes[entryCount] = new TextBox
+                    {
+                        // Use a textbox for general values
+                        _textBoxes[_entryCount] = new TextBox
                         {
                             Name = name,
                             Text = val,
                             Width = width
                         };
-                        textBoxes[entryCount].Leave += new EventHandler(TextBoxValueChanged);
-                        panel.Controls.Add(textBoxes[entryCount]);
+                        _textBoxes[_entryCount].Leave += TextBoxValueChanged;
+                        panel.Controls.Add(_textBoxes[_entryCount]);
                     }
-                    entryCount++;
+
+                    _entryCount++;
                     entriesInThisTab++;
                 }
                 else
-                {   // JSON keys ending in # are comments, use them for tooltips
+                {
+                    // JSON keys ending in # are comments, use them for tooltips
                     string tip = entry.Value;
                     if (tip.Length > 45) // If more than 45 chars wrap every 40
                     {
                         tip = TextUtils.WrapText(tip, 40);
                     }
 
-                    toolTips[entryCount - 1] = new ToolTip();
-                    toolTips[entryCount - 1].SetToolTip(labels[entryCount - 1], tip);
-                    toolTips[entryCount - 1].IsBalloon = true;
+                    _toolTips[_entryCount - 1] = new ToolTip();
+                    _toolTips[_entryCount - 1]
+                        .SetToolTip(_labels[_entryCount - 1], tip);
+                    _toolTips[_entryCount - 1].IsBalloon = true;
                     if (lastval == "True" || lastval == "False")
                     {
                         // this.keyCount-1 is not necessarily correct, should find the matching key
-                        toolTips[entryCount - 1].SetToolTip(comboBoxes[entryCount - 1], tip);
+                        _toolTips[_entryCount - 1]
+                            .SetToolTip(_comboBoxes[_entryCount - 1], tip);
                     }
                     else
                     {
-                        toolTips[entryCount - 1].SetToolTip(textBoxes[entryCount - 1], tip);
+                        _toolTips[_entryCount - 1]
+                            .SetToolTip(_textBoxes[_entryCount - 1], tip);
                     }
                 }
+
                 lastval = val;
             }
 
             // Set the number of columns of label/entry pairs
-            panel.ColumnCount = ((entriesInThisTab / maxRows) + 1) * 2;
+            panel.ColumnCount = (entriesInThisTab / MaxRows + 1) * 2;
         }
 
         /// <summary> Event handler when a value is changed </summary>
-        private void ComboBoxValueChanged(object sender, System.EventArgs e)
+        private void ComboBoxValueChanged(object sender, EventArgs e)
         {
             //write your event code here
-            string key = ((System.Windows.Forms.Control)sender).Name;
-            string value = ((System.Windows.Forms.ComboBox)sender).Text;
+            var key = ((Control) sender).Name;
+            var value = ((ComboBox) sender).Text;
             WriteDict.WriteValue(key, value);
         }
 
         /// <summary> Event handler when a value is changed </summary>
-        private void TextBoxValueChanged(object sender, System.EventArgs e)
+        private void TextBoxValueChanged(object sender, EventArgs e)
         {
             //write your event code here
-            string key = ((System.Windows.Forms.Control)sender).Name;
-            string value = ((System.Windows.Forms.TextBox)sender).Text;
+            var key = ((Control) sender).Name;
+            var value = ((TextBox) sender).Text;
             WriteDict.WriteValue(key, value);
         }
 
@@ -133,14 +143,14 @@ namespace rF2_player_editor
         /// </summary>
         public Form1(dict tabDict)
         {
-            int tabCount = tabDict.Count;
-            panels = new TableLayoutPanel[tabCount];
-            tabPages = new TabPage[tabCount];
+            var tabCount = tabDict.Count;
+            var panels = new TableLayoutPanel[tabCount];
+            var tabPages = new TabPage[tabCount];
             int width;
 
             InitializeComponent();
 
-            for (int u = 0; u < tabCount; u++)
+            for (var u = 0; u < tabCount; u++)
             {
                 panels[u] = new TableLayoutPanel
                 {
@@ -150,8 +160,8 @@ namespace rF2_player_editor
                 tabPages[u].Controls.Add(panels[u]);
             }
 
-            int panelCount = 0;
-            foreach (System.Collections.Generic.KeyValuePair<string, dynamic> entry in tabDict)
+            var panelCount = 0;
+            foreach (var entry in tabDict)
             {
                 if (entry.Key == "Chat")
                 {
@@ -169,25 +179,29 @@ namespace rF2_player_editor
                     width);
 
                 TabControl1.Controls.Add(tabPages[panelCount]);
-                panels[panelCount].Padding = new System.Windows.Forms.Padding(15, 15, 15, 15); //Padding round the panel
+                panels[panelCount].Padding =
+                    new Padding(15, 15, 15, 15); //Padding round the panel
                 panelCount++;
             }
-            TabControl1.Height = 12000 / maxRows;
-            TabControl1.ItemSize = new Size(50, 60);    // Set the size of the tab labels
-            TabControl1.Padding = new System.Drawing.Point(1, 0); //Padding round the tab labels
+
+            TabControl1.Height = 12000 / MaxRows;
+            TabControl1.ItemSize =
+                new Size(50, 60); // Set the size of the tab labels
+            TabControl1.Padding =
+                new Point(1, 0); //Padding round the tab labels
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (WriteDict.changed)
             {
-                string message = String.Format(
+                var message = string.Format(
                     "You have made changes, do you want to save them in {0}?",
                     Config.playerJson);
                 const string caption = "Closing down";
                 var result = MessageBox.Show(message, caption,
-                                             MessageBoxButtons.YesNo,
-                                             MessageBoxIcon.Question);
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
 
                 if (result == DialogResult.Yes)
                 {
@@ -195,6 +209,30 @@ namespace rF2_player_editor
                 }
             }
         }
+
+        private void FileMenuItemOpenClick(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                var editsFile = openFileDialog.FileName;
+                MessageBox.Show(string.Format("Open {0}", editsFile));
+            }
+        }
+
+        private void FileMenuItemSaveClick(object sender, EventArgs e)
+        {
+            MessageBox.Show("File menu save item clicked");
+        }
+
+        private void FileMenuItemExitClick(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void HelpMenuItemAboutClick(object sender, EventArgs e)
+        {
+            var about = new AboutBox1();
+            about.ShowDialog();
+        }
     }
 }
-

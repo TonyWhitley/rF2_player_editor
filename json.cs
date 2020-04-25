@@ -7,6 +7,7 @@ namespace rF2_player_editor
 {
     using dict = System.Collections.Generic.Dictionary<string, dynamic>;
     using KVpair = System.Collections.Generic.KeyValuePair<string, dynamic>;
+
     /// <summary>
     /// Class to handle JSON files!
     /// </summary>
@@ -18,12 +19,12 @@ namespace rF2_player_editor
         public static dict ReadJsonFile(string filepath)
         {
             string json;
-            using (StreamReader r = new StreamReader(filepath))
+            using (var r = new StreamReader(filepath))
             {
                 json = r.ReadToEnd();
             }
 
-            dict player = JsonConvert.DeserializeObject<dict>(json);
+            var player = JsonConvert.DeserializeObject<dict>(json);
             return player;
         }
 
@@ -33,14 +34,16 @@ namespace rF2_player_editor
         public static dict ParseRF2PlayerEditorFilter(
             dict rF2PlayerEditorFilter)
         {
-            dict tabs = new dict();
+            var tabs = new dict();
             // Throw away the prepended Player.JSON key
             rF2PlayerEditorFilter.Remove("Player.JSON");
-            foreach (KVpair tabName in rF2PlayerEditorFilter)
+            foreach (var tabName in rF2PlayerEditorFilter)
             {
                 //foreach (var f in rF2PlayerEditorFilter[tabName.Key].Children())
-                tabs[tabName.Key] = rF2PlayerEditorFilter[tabName.Key].ToObject<dict>();
+                tabs[tabName.Key] = rF2PlayerEditorFilter[tabName.Key]
+                    .ToObject<dict>();
             }
+
             return tabs;
         }
 
@@ -53,32 +56,38 @@ namespace rF2_player_editor
         {
             JsonString = JsonString.Replace("\": ", "\":");
             JsonString = JsonString.Replace("/", "\\/");
-            JsonString = JsonString.Replace("Look Up\\/Down Angle", "Look Up/Down Angle");
+            JsonString = JsonString.Replace("Look Up\\/Down Angle",
+                "Look Up/Down Angle");
             JsonString = JsonString.Replace("pixel\\/seconds", "pixel/seconds");
             return JsonString;
         }
+
         /// <summary>
         /// Write a dict to JSON file.
         /// </summary>
         public static void WriteJsonFile(string filepath, dict dictionary)
         {
-            foreach (KVpair section in dictionary)
+            foreach (var section in dictionary)
             {
-                foreach (dynamic entry in dictionary[section.Key])
+                foreach (var entry in dictionary[section.Key])
                 {
                     if (entry.Name.Contains(" Version"))
-                    { // Version entries are strings not doubles "
+                    {
+                        // Version entries are strings not doubles "
                         dictionary[section.Key][entry.Name] = entry.Value;
                     }
                     else
                     {
-                        dictionary[section.Key][entry.Name] = WriteDict.TextToObject(entry.Value.ToString());
+                        dictionary[section.Key][entry.Name] =
+                            WriteDict.TextToObject(entry.Value.ToString());
                     }
                 }
             }
-            string JsonString = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
-            JsonString = JsonToRF2(JsonString);
-            File.WriteAllText(filepath, JsonString);
+
+            var jsonString =
+                JsonConvert.SerializeObject(dictionary, Formatting.Indented);
+            jsonString = JsonToRF2(jsonString);
+            File.WriteAllText(filepath, jsonString);
         }
 
         /// <summary>
@@ -88,64 +97,72 @@ namespace rF2_player_editor
         /// <returns>JSON string</returns>
         public static string SerializeObject(object obj)
         {
-            string JsonString = JsonConvert.SerializeObject(obj, Formatting.Indented);
-            JsonString = JsonToRF2(JsonString);
-            return JsonString;
+            var jsonString =
+                JsonConvert.SerializeObject(obj, Formatting.Indented);
+            jsonString = JsonToRF2(jsonString);
+            return jsonString;
         }
 
         /// <summary>
         /// Copy the values from a dict to a another dict
         /// </summary>
-        public static void CopyDictValues(ref dict from_dict, ref dict to_dict)
+        public static void CopyDictValues(ref dict fromDict, ref dict toDict)
         {
-            foreach (KVpair entry in to_dict) // to_dict[to_dict.Keys].ToObject<dict>())
+            foreach (var entry in toDict
+            ) // to_dict[to_dict.Keys].ToObject<dict>())
             {
-                string name = entry.Key;
-                foreach (dynamic _key in to_dict[name])
+                var name = entry.Key;
+                foreach (var key in toDict[name])
                 {
-                    if (!_key.Name.EndsWith("#") &&  // If it's not a comment
-                        from_dict[name][_key.Name] != null) // and from_dict has the key
+                    if (!key.Name.EndsWith("#") && // If it's not a comment
+                        fromDict[name][key.Name] != null
+                    ) // and from_dict has the key
                     {
-                        to_dict[name][_key.Name] = from_dict[name][_key.Name];
+                        toDict[name][key.Name] = fromDict[name][key.Name];
                     }
                 }
-
             }
         }
 
         /// <summary>
         /// Copy the values from a dict to this program's filter dict
         /// </summary>
-        public static void CopyAllValuesToFilter(ref dict from_dict, ref dict to_dict)
+        public static void CopyAllValuesToFilter(ref dict fromDict,
+            ref dict toDict)
         {
-            foreach (KVpair entry in to_dict) // to_dict[to_dict.Keys].ToObject<dict>())
+            foreach (var entry in toDict
+            ) // to_dict[to_dict.Keys].ToObject<dict>())
             {
-                dict tabDict = to_dict[entry.Key];
-                CopyDictValues(ref from_dict, ref tabDict);
+                dict tabDict = toDict[entry.Key];
+                CopyDictValues(ref fromDict, ref tabDict);
             }
         }
 
         /// <summary>
         /// Copy the values from this program's filter dict to a another dict
         /// </summary>
-        public static void CopyAllValuesFromFilter(ref dict from_dict, ref dict to_dict)
+        public static void CopyAllValuesFromFilter(ref dict fromDict,
+            ref dict toDict)
         {
-            foreach (KVpair entry in from_dict) // to_dict[to_dict.Keys].ToObject<dict>())
+            foreach (var entry in fromDict
+            ) // to_dict[to_dict.Keys].ToObject<dict>())
             {
-                dict tabDict = from_dict[entry.Key];
-                CopyDictValues(ref tabDict, ref to_dict);
+                dict tabDict = fromDict[entry.Key];
+                CopyDictValues(ref tabDict, ref toDict);
             }
         }
 
         /// <summary>
         /// Copy the values from a tab's dict to the Player dict
         /// </summary>
-        public static void CopyAllValuesFromTab(ref dict from_dict, ref dict to_dict)
+        public static void CopyAllValuesFromTab(ref dict fromDict,
+            ref dict toDict)
         {
-            foreach (KVpair entry in from_dict) // to_dict[to_dict.Keys].ToObject<dict>())
+            foreach (var entry in fromDict
+            ) // to_dict[to_dict.Keys].ToObject<dict>())
             {
-                dict tabDict = from_dict[entry.Key];
-                CopyDictValues(ref tabDict, ref to_dict);
+                dict tabDict = fromDict[entry.Key];
+                CopyDictValues(ref tabDict, ref toDict);
             }
         }
     }
@@ -163,29 +180,29 @@ namespace rF2_player_editor
         /// <returns></returns>
         public static object TextToObject(string value)
         {
-            bool boolResult;
-            if (bool.TryParse(value, out boolResult))
+            if (bool.TryParse(value, out var boolResult))
             {
                 return boolResult;
             }
-            long longResult;
-            if (long.TryParse(value, out longResult))
+
+            if (long.TryParse(value, out var longResult))
             {
                 return longResult;
             }
-            double doubleResult;
-            if (double.TryParse(value, out doubleResult))
+
+            if (double.TryParse(value, out var doubleResult))
             {
                 return doubleResult;
             }
-            float floatResult;
-            if (float.TryParse(value, out floatResult))
+
+            if (float.TryParse(value, out var floatResult))
             {
                 return floatResult;
             }
-            
+
             return value;
         }
+
         /// <summary>
         /// Write value to the key found somewhere in the dict
         /// </summary>
@@ -194,9 +211,9 @@ namespace rF2_player_editor
         /// <returns></returns>
         public static bool WriteValue(string key, string value)
         {
-            foreach (System.Collections.Generic.KeyValuePair<string, dynamic> tabData in writeDict) // HACKERY!!!
+            foreach (var tabData in writeDict) // HACKERY!!!
             {
-                string group = tabData.Key;
+                var group = tabData.Key;
                 dict fred = tabData.Value.ToObject<dict>();
                 if (fred.ContainsKey(key))
                 {
@@ -205,6 +222,7 @@ namespace rF2_player_editor
                     return true;
                 }
             }
+
             return false; // didn't find the key
         }
     }
@@ -221,12 +239,12 @@ namespace rF2_player_editor
         /// <param name="width">Max width of resulting text</param>
         public static string WrapText(string text, int width)
         {
-            string[] originalWords = text.Split(new string[] { " " },
+            var originalWords = text.Split(new string[] {" "},
                 StringSplitOptions.None);
-            StringBuilder result = new StringBuilder();
-            int lineWidth = 0;
+            var result = new StringBuilder();
+            var lineWidth = 0;
 
-            foreach (string word in originalWords)
+            foreach (var word in originalWords)
             {
                 result.Append(word + " ");
                 lineWidth += word.Length + 1;
@@ -237,6 +255,7 @@ namespace rF2_player_editor
                     lineWidth = 0;
                 }
             }
+
             return result.ToString();
         }
     }

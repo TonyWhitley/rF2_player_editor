@@ -70,6 +70,10 @@ namespace rF2_player_editor
                         _comboBoxes[_entryCount].Width = width;
                         _comboBoxes[_entryCount].Leave += ComboBoxValueChanged;
                         panel.Controls.Add(_comboBoxes[_entryCount]);
+                        // default tooltip that with luck is overwritten with real help text
+                        _toolTips[_entryCount] = new ToolTip();
+                        _toolTips[_entryCount]
+                                .SetToolTip(_comboBoxes[_entryCount], "No help available");
                     }
                     else
                     {
@@ -82,7 +86,14 @@ namespace rF2_player_editor
                         };
                         _textBoxes[_entryCount].Leave += TextBoxValueChanged;
                         panel.Controls.Add(_textBoxes[_entryCount]);
+                        // default tooltip that with luck is overwritten with real help text
+                        _toolTips[_entryCount] = new ToolTip();
+                        _toolTips[_entryCount]
+                                .SetToolTip(_textBoxes[_entryCount], "No help available");
                     }
+                    _toolTips[_entryCount]
+                        .SetToolTip(_labels[_entryCount], "No help available");
+                    _toolTips[_entryCount].IsBalloon = true;
 
                     _entryCount++;
                     entriesInThisTab++;
@@ -96,7 +107,6 @@ namespace rF2_player_editor
                         tip = TextUtils.WrapText(tip, 40);
                     }
 
-                    _toolTips[_entryCount - 1] = new ToolTip();
                     _toolTips[_entryCount - 1]
                         .SetToolTip(_labels[_entryCount - 1], tip);
                     _toolTips[_entryCount - 1].IsBalloon = true;

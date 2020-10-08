@@ -246,10 +246,16 @@ namespace rF2_player_editor
 
             foreach (var word in originalWords)
             {
+                /*if (lineWidth != 0 && word.Contains("="))
+                {
+                    result.Append("\n");
+                    lineWidth = 0;
+                }*/
                 result.Append(word + " ");
                 lineWidth += word.Length + 1;
 
-                if (lineWidth > width)
+                if (lineWidth > width ||
+                    (word.EndsWith(",")))
                 {
                     result.Append("\n");
                     lineWidth = 0;

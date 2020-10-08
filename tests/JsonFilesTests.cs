@@ -195,5 +195,25 @@ namespace Tests
                 "Details and visible vehicles will be automatically \nreduced (by up to half) if framerate is under \nthis threshold (0 to disable) ",
                 wrapped);
         }
+        [TestMethod()]
+        public void CommaTest()
+        {
+            var input =
+                "0 = no repeat shift detection, 1 = detect and eliminate accidental repeat shifts within 100ms, 2 = 150ms, 3 = 200ms, 4 = 250ms, 5 = prevent shifting again before previous shift is completed";
+            var wrapped = TextUtils.WrapText(input, 40);
+            Assert.AreEqual(
+                "0 = no repeat shift detection, \n1 = detect and eliminate accidental repeat \nshifts within 100ms, \n2 = 150ms, \n3 = 200ms, \n4 = 250ms, \n5 = prevent shifting again before previous \nshift is completed ",
+                wrapped);
+        }
+        [TestMethod()]
+        public void CommaTest2()
+        {
+            var input =
+                "0=Off, 1=Player Only, 2=Everybody";
+            var wrapped = TextUtils.WrapText(input, 40);
+            Assert.AreEqual(
+                "0=Off, \n1=Player Only, \n2=Everybody ",
+                wrapped);
+        }
     }
 }

@@ -36,10 +36,10 @@
             this.toolStripMenuFileOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuFileSave = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuFileExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -81,7 +81,7 @@
             this.toolStripMenuFileOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.toolStripMenuFileOpen.Size = new System.Drawing.Size(315, 40);
             this.toolStripMenuFileOpen.Text = "Open";
-            this.toolStripMenuFileOpen.ToolTipText = "Open a file of edits to Player.JSON";
+            this.toolStripMenuFileOpen.ToolTipText = "Open a file that lays out Player.JSON";
             this.toolStripMenuFileOpen.Click += new System.EventHandler(this.FileMenuItemOpenClick);
             // 
             // toolStripMenuFileSave
@@ -89,7 +89,7 @@
             this.toolStripMenuFileSave.Name = "toolStripMenuFileSave";
             this.toolStripMenuFileSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.toolStripMenuFileSave.Size = new System.Drawing.Size(315, 40);
-            this.toolStripMenuFileSave.Text = "Save";
+            this.toolStripMenuFileSave.Text = "Save as";
             this.toolStripMenuFileSave.ToolTipText = "Save Player.JSON";
             this.toolStripMenuFileSave.Click += new System.EventHandler(this.FileMenuItemSaveClick);
             // 
@@ -99,14 +99,6 @@
             this.toolStripMenuFileExit.Size = new System.Drawing.Size(315, 40);
             this.toolStripMenuFileExit.Text = "Exit";
             this.toolStripMenuFileExit.Click += new System.EventHandler(this.FileMenuItemExitClick);
-            // 
-            // openFileDialog
-            // 
-            this.openFileDialog.DefaultExt = "JSON";
-            this.openFileDialog.Filter = "JSON files (*.JSON)|*.JSON|All files (*.*)|*.*";
-            this.openFileDialog.InitialDirectory = ".";
-            this.openFileDialog.ReadOnlyChecked = true;
-            this.openFileDialog.Title = "Open JSON file containing edits";
             // 
             // helpToolStripMenuItem
             // 
@@ -119,9 +111,21 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(315, 40);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(188, 40);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.HelpMenuItemAboutClick);
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.DefaultExt = "JSON";
+            this.openFileDialog.Filter = "JSON files (*.JSON)|*.JSON|All files (*.*)|*.*";
+            this.openFileDialog.InitialDirectory = ".";
+            this.openFileDialog.ReadOnlyChecked = true;
+            this.openFileDialog.Title = "Open JSON file that lays out Player.JSON";
+            // 
+            // saveFileDialog
+            // 
+            this.saveFileDialog.DefaultExt = "JSON";
             // 
             // Form1
             // 
@@ -155,7 +159,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
     }
 }
 

@@ -36,15 +36,19 @@ namespace rF2_player_editor
     /// </remarks>
     public static class Config
     {
+        public static string playerPath =
+            @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player";
+
         public static string playerJson = @"player.JSON";
 
         public static string playerJsonPath =
-            @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\" +
-            playerJson;
+            System.IO.Path.Combine(playerPath, playerJson);
+
+        public static string playerJsonFilter = @"rF2PlayerEditorFilter.JSON";
 
         public static string rF2PlayerEditorFilterJson =
             System.IO.Path.Combine(GetTheDataFilePath(),
-                "rF2PlayerEditorFilter.JSON");
+                playerJsonFilter);
 
         /// <summary> Get the path of this source file </summary>
         private static string GetThisFilesPath(
@@ -65,7 +69,7 @@ namespace rF2_player_editor
         /// if we're running as a program, the same as the source file if
         /// we're running under VS
         /// </summary>
-        private static string GetTheDataFilePath()
+        public static string GetTheDataFilePath()
         {
             if (System.Diagnostics.Debugger.IsAttached)
             {

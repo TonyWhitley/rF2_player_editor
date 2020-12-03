@@ -69,6 +69,7 @@ namespace rF2_player_editor
                         _comboBoxes[_entryCount].Text = val;
                         _comboBoxes[_entryCount].Width = width;
                         _comboBoxes[_entryCount].Leave += ComboBoxValueChanged;
+                        _comboBoxes[_entryCount].DropDownClosed += ComboBoxValueChanged;
                         panel.Controls.Add(_comboBoxes[_entryCount]);
                         // default tooltip that with luck is overwritten with real help text
                         _toolTips[_entryCount] = new ToolTip();
@@ -84,7 +85,8 @@ namespace rF2_player_editor
                             Text = val,
                             Width = width
                         };
-                        _textBoxes[_entryCount].Leave += TextBoxValueChanged;
+                        _textBoxes[_entryCount].Validated += TextBoxValueChanged;
+                        _textBoxes[_entryCount].KeyDown += TextBoxKeyDown;
                         panel.Controls.Add(_textBoxes[_entryCount]);
                         // default tooltip that with luck is overwritten with real help text
                         _toolTips[_entryCount] = new ToolTip();
@@ -148,6 +150,16 @@ namespace rF2_player_editor
             WriteDict.WriteValue(key, value);
         }
 
+        private void TextBoxKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                TextBoxValueChanged(sender, e);
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
+
         /// <summary>
         /// The main (only) form
         /// </summary>
@@ -196,9 +208,9 @@ namespace rF2_player_editor
 
             TabControl1.Height = 12000 / MaxRows;
             TabControl1.ItemSize =
-                new Size(50, 60); // Set the size of the tab labels
+                new Size(50, 70); // Set the size of the tab labels
             TabControl1.Padding =
-                new Point(1, 0); //Padding round the tab labels
+                new Point(3, 0); //Padding round the tab labels
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -206,7 +218,7 @@ namespace rF2_player_editor
             if (WriteDict.changed)
             {
                 var message = string.Format(
-                    "You have made changes, do you want to save them in {0}?",
+                    "You have made changes, do you want to save them?",
                     Config.playerJson);
                 const string caption = "Closing down";
                 var result = MessageBox.Show(message, caption,
@@ -215,23 +227,34 @@ namespace rF2_player_editor
 
                 if (result == DialogResult.Yes)
                 {
-                    rF2_player_editor.SaveChanges();
+                    FileMenuItemSaveClick(sender, e);
                 }
             }
         }
 
         private void FileMenuItemOpenClick(object sender, EventArgs e)
         {
+            openFileDialog.InitialDirectory = Config.GetTheDataFilePath();
+            openFileDialog.FileName = Config.playerJsonFilter;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 var editsFile = openFileDialog.FileName;
-                MessageBox.Show(string.Format("Open {0}", editsFile));
+                // TBD: do something with it!
+                //MessageBox.Show(string.Format("Open {0}", editsFile));
             }
         }
 
         private void FileMenuItemSaveClick(object sender, EventArgs e)
         {
-            MessageBox.Show("File menu save item clicked");
+            saveFileDialog.InitialDirectory = Config.playerPath;
+            saveFileDialog.FileName = Config.playerJson;
+            saveFileDialog.Filter = "JSON files|*.JSON";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Config.playerJsonPath = saveFileDialog.FileName;
+                rF2_player_editor.SaveChanges();
+                //MessageBox.Show(string.Format("Saved as {0}", Config.playerJsonPath));
+            }
         }
 
         private void FileMenuItemExitClick(object sender, EventArgs e)

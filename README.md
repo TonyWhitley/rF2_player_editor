@@ -1,3 +1,4 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # rF2_player_editor
 
 Playing with C#, maybe this will become a set of tabs that allow the entries in rFactor 2's Player.JSON to be edited.

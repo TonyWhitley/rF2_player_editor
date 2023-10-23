@@ -219,7 +219,7 @@ namespace rF2_player_editor
             {
                 var message = string.Format(
                     "You have made changes, do you want to save them?",
-                    Config.playerJson);
+                    rF2_player_editor.cfg.playerJson);
                 const string caption = "Closing down";
                 var result = MessageBox.Show(message, caption,
                     MessageBoxButtons.YesNo,
@@ -234,8 +234,8 @@ namespace rF2_player_editor
 
         private void FileMenuItemOpenClick(object sender, EventArgs e)
         {
-            openFileDialog.InitialDirectory = Config.GetTheDataFilePath();
-            openFileDialog.FileName = Config.playerJsonFilter;
+            openFileDialog.InitialDirectory = rF2_player_editor.cfg.GetTheDataFilePath();
+            openFileDialog.FileName = rF2_player_editor.cfg.playerJsonFilter;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 var editsFile = openFileDialog.FileName;
@@ -246,12 +246,12 @@ namespace rF2_player_editor
 
         private void FileMenuItemSaveClick(object sender, EventArgs e)
         {
-            saveFileDialog.InitialDirectory = Config.playerPath;
-            saveFileDialog.FileName = Config.playerJson;
+            saveFileDialog.InitialDirectory = rF2_player_editor.cfg.playerPath;
+            saveFileDialog.FileName = rF2_player_editor.cfg.playerJson;
             saveFileDialog.Filter = "JSON files|*.JSON";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                Config.playerJsonPath = saveFileDialog.FileName;
+                rF2_player_editor.cfg.playerJsonPath = saveFileDialog.FileName;
                 rF2_player_editor.SaveChanges();
                 //MessageBox.Show(string.Format("Saved as {0}", Config.playerJsonPath));
             }

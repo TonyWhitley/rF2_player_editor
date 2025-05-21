@@ -1,17 +1,14 @@
 ﻿using System;
-using System.CommandLine;
-using System.IO;
 using System.Windows.Forms;
 
-using CommandLine.Text;
 using CommandLine;
 
 namespace rF2_player_editor
 {
-    using dict = System.Collections.Generic.Dictionary<string, dynamic>;
-
     internal class Config
     {
+        internal string rf2Lmu;
+
         internal string playerPath;
 
         internal string playerJson;
@@ -20,10 +17,11 @@ namespace rF2_player_editor
 
         internal string playerJsonFilter;
 
-        internal string rF2PlayerEditorFilterJson;
+        internal string playerEditorFilterJson;
 
         internal Config()
         {
+            rf2Lmu = "RF2";
             playerPath =
                 @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player";
             playerJson = @"player.JSON";
@@ -31,13 +29,28 @@ namespace rF2_player_editor
                 System.IO.Path.Combine(playerPath, playerJson);
             playerJsonFilter = @"rF2PlayerEditorFilter.JSON";
 
-            rF2PlayerEditorFilterJson =
+            playerEditorFilterJson =
             System.IO.Path.Combine(GetTheDataFilePath(),
                 playerJsonFilter);
         }
 
-    /// <summary> Get the path of this source file </summary>
-    internal static string GetThisFilesPath(
+        internal void SwitchToLMU()
+        {
+            rf2Lmu = "LMU";
+            playerPath =
+                @"c:\Program Files (x86)\Steam\steamapps\common\Le Mans Ultimate\UserData\player";
+            playerJson = @"player.JSON";
+            playerJsonPath =
+                System.IO.Path.Combine(playerPath, playerJson);
+            playerJsonFilter = @"LmuPlayerEditorFilter.JSON";
+
+            playerEditorFilterJson =
+                System.IO.Path.Combine(GetTheDataFilePath(),
+                    playerJsonFilter);
+        }
+
+        /// <summary> Get the path of this source file </summary>
+        internal static string GetThisFilesPath(
             [System.Runtime.CompilerServices.CallerFilePath]
             string sourceFilePath = "")
         {
@@ -104,23 +117,28 @@ namespace rF2_player_editor
 #pragma warning restore IDE1006 // Naming Styles
     {
         public static Config cfg;
+        private static bool scripting = false;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         /// <param args>The command line args.</param>
         [STAThread]
-        private static void
-            Main(string[] args)
+        private static void Main(string[] args)
         {
             cfg = ParseCommandLine(args);
+            if (cfg.rf2Lmu == "LMU")
+            {
+                cfg.SwitchToLMU();
+            }
 
 
             //(System.IO.FileInfo script, System.IO.FileInfo PlayerJson)
             //{
-            var player = JsonFiles.ReadJsonFile(cfg.playerJsonPath);
+            var playerOriginal = JsonFiles.ReadJsonFile(cfg.playerJsonPath);
             var playerFilter =
-                JsonFiles.ReadJsonFile(cfg.rF2PlayerEditorFilterJson);
-            WriteDict.writeDict = player;
+                JsonFiles.ReadJsonFile(cfg.playerEditorFilterJson);
+            WriteDict.writeDict = playerOriginal;
             // Get Player.JSON path from the file then remove it from the dictionary
             cfg.playerJsonPath = playerFilter["Player.JSON"];
             playerFilter.Remove("Player.JSON");
@@ -130,17 +148,32 @@ namespace rF2_player_editor
 
             var tabs = JsonFiles.ParseRF2PlayerEditorFilter(playerFilter);
             // Copy values from Player.JSON to the dict used to display entries
-            JsonFiles.CopyAllValuesToFilter(ref player, ref tabs);
+            JsonFiles.CopyAllValuesToFilter(ref playerOriginal, ref tabs);
 
-            Application.Run(new Form1(tabs));
+            if (!scripting)
+            {
+                var form = new Form1(tabs);
+                Application.Run(form);
+                var diff =
+                    WriteDict.GetDictionaryDifference(WriteDict.writeDict,
+                        playerOriginal);
+                if (diff.Count > 0)
+                {   // Content has changed, offer to save / save as
+                    form.SaveChanges();
+                }
+            }
         }
 
         internal class Options
         {
             [Option('s', "script", Required = false, HelpText = "The path to the JSON file containing edits.")]
-            internal string Script { get; set; }
+            public string Script { get; set; }
             [Option('j', "json", Required = false, HelpText = "The path to the JSON file to be edited.")]
-            internal string Json { get; set; }
+            public string Json { get; set; }
+            [Option('r', "rf2", Required = false, HelpText = "Edit the rFactor 2 JSON file.")]
+            public string Rf2 { get; set; }
+            [Option('l', "lmu", Required = false, HelpText = "Edit the Le Mans Ultimate JSON file.")]
+            public string Lmu { get; set; }
         }
 
         private static Config ParseCommandLine(string[] args)
@@ -152,11 +185,22 @@ namespace rF2_player_editor
                     if (!String.IsNullOrEmpty(o.Script))
                     {
                         Console.WriteLine($"Script input enabled. Current Arguments: --script {o.Script}");
+                        scripting = true;
                     }
                     if (!String.IsNullOrEmpty(o.Json))
                     {
-                        Console.WriteLine($"JSON file to be edited. Current Arguments: --script {o.Json}");
+                        Console.WriteLine($"JSON file to be edited. Current Arguments: --json {o.Json}");
                         config.playerJson = o.Json;
+                    }
+                    if (!String.IsNullOrEmpty(o.Rf2))
+                    {
+                        Console.WriteLine("Edit the rFactor 2 JSON file");
+                        config.rf2Lmu = "RF2";
+                    }
+                    if (!String.IsNullOrEmpty(o.Lmu))
+                    {
+                        Console.WriteLine("Edit the Le Mans Ultimate JSON file");
+                        config.rf2Lmu = "LMU";
                     }
                 });
             return config;

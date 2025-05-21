@@ -1,24 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace rF2_player_editor
 {
-    using dict = System.Collections.Generic.Dictionary<string, dynamic>;
+    using dict = Dictionary<string, dynamic>;
 
     /// <summary>
     /// The main form
     /// </summary>
     public partial class Form1 : Form
     {
-        private const int NumberOfEntries = 1200;
         private const int MaxRows = 20;
-        private readonly TextBox[] _textBoxes = new TextBox[NumberOfEntries];
-        private readonly Label[] _labels = new Label[NumberOfEntries];
-        private readonly ToolTip[] _toolTips = new ToolTip[NumberOfEntries];
-        private readonly ComboBox[] _comboBoxes = new ComboBox[NumberOfEntries];
-        private int _entryCount;
+
+        private readonly Dictionary<string, TextBox> _textBoxes =
+            new Dictionary<string, TextBox>{};
+        private readonly Dictionary<string, Label> _labels = new Dictionary<string, Label> { };
+        private readonly Dictionary<string, ToolTip> _toolTips = new Dictionary<string, ToolTip> { };
+        private readonly Dictionary<string, ComboBox> _comboBoxes = new Dictionary<string, ComboBox> {};
 
         private void Tab(dict tabData,
             string section,
@@ -28,7 +29,7 @@ namespace rF2_player_editor
         {
             // Fill in tab 'section' with data from 'tabData'
             var entriesInThisTab = 0;
-            string lastval = null;
+            string lastVal = null;
 
             panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             tabPage.Text = section;
@@ -48,84 +49,86 @@ namespace rF2_player_editor
 
                 if (name.Last() != '#')
                 {
-                    _labels[_entryCount] = new Label
+                    _labels[name] = new Label
                     {
                         Name = name,
                         Text = name,
                         AutoSize = true,
                         Visible = true
                     };
-                    panel.Controls.Add(_labels[_entryCount]);
+                    panel.Controls.Add(_labels[name]);
 
+                    var defaultTip = $"No help available\nDefault: {val}";
                     if (val == "True" || val == "False")
                     {
                         // Use a combobox for booleans
-                        _comboBoxes[_entryCount] = new ComboBox
+                        _comboBoxes[name] = new ComboBox
                         {
                             Name = name
                         };
-                        _comboBoxes[_entryCount].Items.AddRange(new object[]
+                        _comboBoxes[name].Items.AddRange(new object[]
                             {"True", "False"});
-                        _comboBoxes[_entryCount].Text = val;
-                        _comboBoxes[_entryCount].Width = width;
-                        _comboBoxes[_entryCount].Leave += ComboBoxValueChanged;
-                        _comboBoxes[_entryCount].DropDownClosed += ComboBoxValueChanged;
-                        panel.Controls.Add(_comboBoxes[_entryCount]);
+                        _comboBoxes[name].Text = val;
+                        _comboBoxes[name].Width = width;
+                        _comboBoxes[name].Leave += ComboBoxValueChanged;
+                        _comboBoxes[name].DropDownClosed += ComboBoxValueChanged;
+                        panel.Controls.Add(_comboBoxes[name]);
                         // default tooltip that with luck is overwritten with real help text
-                        _toolTips[_entryCount] = new ToolTip();
-                        _toolTips[_entryCount]
-                                .SetToolTip(_comboBoxes[_entryCount], "No help available");
+                        _toolTips[name] = new ToolTip();
+                        _toolTips[name]
+                                .SetToolTip(_comboBoxes[name], defaultTip);
                     }
                     else
                     {
                         // Use a textbox for general values
-                        _textBoxes[_entryCount] = new TextBox
+                        _textBoxes[name] = new TextBox
                         {
                             Name = name,
                             Text = val,
                             Width = width
                         };
-                        _textBoxes[_entryCount].Validated += TextBoxValueChanged;
-                        _textBoxes[_entryCount].KeyDown += TextBoxKeyDown;
-                        panel.Controls.Add(_textBoxes[_entryCount]);
+                        _textBoxes[name].Validated += TextBoxValueChanged;
+                        _textBoxes[name].KeyDown += TextBoxKeyDown;
+                        panel.Controls.Add(_textBoxes[name]);
                         // default tooltip that with luck is overwritten with real help text
-                        _toolTips[_entryCount] = new ToolTip();
-                        _toolTips[_entryCount]
-                                .SetToolTip(_textBoxes[_entryCount], "No help available");
+                        _toolTips[name] = new ToolTip();
+                        _toolTips[name]
+                                .SetToolTip(_textBoxes[name], defaultTip);
                     }
-                    _toolTips[_entryCount]
-                        .SetToolTip(_labels[_entryCount], "No help available");
-                    _toolTips[_entryCount].IsBalloon = true;
+                    _toolTips[name]
+                        .SetToolTip(_labels[name], defaultTip);
+                    _toolTips[name].IsBalloon = true;
 
-                    _entryCount++;
                     entriesInThisTab++;
                 }
                 else
                 {
                     // JSON keys ending in # are comments, use them for tooltips
+                    name = name.Trim('#');
                     string tip = entry.Value;
                     if (tip.Length > 45) // If more than 45 chars wrap every 40
                     {
                         tip = TextUtils.WrapText(tip, 40);
                     }
+                    tip += tip.EndsWith("\n") ? null : "\n";
+                    tip += $"Default: {lastVal}";
 
-                    _toolTips[_entryCount - 1]
-                        .SetToolTip(_labels[_entryCount - 1], tip);
-                    _toolTips[_entryCount - 1].IsBalloon = true;
-                    if (lastval == "True" || lastval == "False")
+                    _toolTips[name]
+                        .SetToolTip(_labels[name], tip);
+                    _toolTips[name].IsBalloon = true;
+                    if (lastVal == "True" || lastVal == "False")
                     {
-                        // this.keyCount-1 is not necessarily correct, should find the matching key
-                        _toolTips[_entryCount - 1]
-                            .SetToolTip(_comboBoxes[_entryCount - 1], tip);
+                        _toolTips[name]
+                            .SetToolTip(_comboBoxes[name], tip);
                     }
                     else
                     {
-                        _toolTips[_entryCount - 1]
-                            .SetToolTip(_textBoxes[_entryCount - 1], tip);
+                        _toolTips[name]
+                            .SetToolTip(_textBoxes[name], tip);
                     }
                 }
 
-                lastval = val;
+                lastVal = val;
             }
 
             // Set the number of columns of label/entry pairs
@@ -171,6 +174,7 @@ namespace rF2_player_editor
             int width;
 
             InitializeComponent();
+            rFactorToolStripMenuItem_Click(null, null);
 
             for (var u = 0; u < tabCount; u++)
             {
@@ -215,20 +219,21 @@ namespace rF2_player_editor
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (WriteDict.changed)
-            {
-                var message = string.Format(
-                    "You have made changes, do you want to save them?",
-                    rF2_player_editor.cfg.playerJson);
-                const string caption = "Closing down";
-                var result = MessageBox.Show(message, caption,
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
+        }
 
-                if (result == DialogResult.Yes)
-                {
-                    FileMenuItemSaveClick(sender, e);
-                }
+        public void SaveChanges()
+        {
+            var message = string.Format(
+                "You have made changes, do you want to save them?",
+                rF2_player_editor.cfg.playerJson);
+            const string caption = "Closing down";
+            var result = MessageBox.Show(message, caption,
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                FileMenuItemSaveClick();
             }
         }
 
@@ -244,7 +249,7 @@ namespace rF2_player_editor
             }
         }
 
-        private void FileMenuItemSaveClick(object sender, EventArgs e)
+        private void FileMenuItemSaveClick(object sender = null, EventArgs e = null)
         {
             saveFileDialog.InitialDirectory = rF2_player_editor.cfg.playerPath;
             saveFileDialog.FileName = rF2_player_editor.cfg.playerJson;
@@ -266,6 +271,20 @@ namespace rF2_player_editor
         {
             var about = new AboutBox1();
             about.ShowDialog();
+        }
+
+        private void rFactorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            rFactorToolStripMenuItem.CheckState = CheckState.Checked;
+            leMansUltimateToolStripMenuItem.CheckState = CheckState.Unchecked;
+            this.Text = "rFactor 2 Player Editor";
+        }
+
+        private void leMansUltimateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            leMansUltimateToolStripMenuItem.CheckState = CheckState.Checked;
+            rFactorToolStripMenuItem.CheckState = CheckState.Unchecked;
+            this.Text = "Le Mans Ultimate Player Editor";
         }
     }
 }

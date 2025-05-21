@@ -1,24 +1,111 @@
-root=true
-# EditorConfig is awesome: http://EditorConfig.org
-
 # top-most EditorConfig file
+root = true
+# EditorConfig is awesome: http://EditorConfig.org
+# All C# files
+[*.cs]
 
-# Unix-style newlines with a newline ending every file
-#[*]
-#end_of_line = lf
-#insert_final_newline = true
+############################
+# Language version & style
+############################
 
-[*.{cs,cpp,hpp,h}]
-indent_style=space
-indent_size=4
+dotnet_language_version = latest
 
+# Use file-scoped namespaces
+csharp_style_namespace_declarations = file_scoped:suggestion
+
+# Prefer expression-bodied members
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = when_on_single_line:suggestion
+csharp_style_expression_bodied_ctors = when_on_single_line:suggestion
+
+# Prefer pattern matching
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+
+# Prefer "is not null" over "!= null"
+csharp_style_prefer_is_not_expression = true:suggestion
+
+# Prefer raw string literals
+csharp_style_prefer_raw_string_literals = true:suggestion
+
+# Prefer switch expressions
+csharp_style_prefer_switch_expression = true:suggestion
+
+# Prefer static local functions when possible
+csharp_style_prefer_static_local_function = true:suggestion
+
+# Prefer inferred types (var)
+csharp_style_var_elsewhere = true:suggestion
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+
+# Use primary constructors (when applicable manually)
+# Not enforceable yet via .editorconfig, but apply manually or via Roslynator
+
+# Prefer `required` modifier on init-only properties
+dotnet_diagnostic.IDC0060.severity = suggestion
+
+############################
+# Formatting
+############################
+
+# Use spaces for indentation
+indent_style = space
+indent_size = 4
+
+# Line endings
+end_of_line = crlf
+charset = utf-8-bom
+insert_final_newline = true
+
+# Organize usings
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+
+############################
+# Naming
+############################
+
+# Prefer PascalCase for types and methods
+dotnet_naming_rule.methods_and_types_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.methods_and_types_should_be_pascal_case.symbols = method_and_type
+dotnet_naming_rule.methods_and_types_should_be_pascal_case.style = pascal_case_style
+
+dotnet_naming_symbols.method_and_type.applicable_kinds = method,type
+dotnet_naming_symbols.method_and_type.applicable_accessibilities = *
+dotnet_naming_symbols.method_and_type.required_modifiers = *
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+############################
+# Optional IDE rules (for Visual Studio)
+############################
+
+# Remove unnecessary usings
+dotnet_diagnostic.IDE0005.severity = suggestion
+
+# Use implicit object creation ("new()")
+csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
+
+# Use interpolated strings
+csharp_style_prefer_interpolated_strings = true:suggestion
+
+# Prefer simplified 'default' expressions (e.g., default instead of default(T))
+csharp_style_prefer_simple_default_expression = true:suggestion
+
+############################
 # Microsoft .NET properties
+############################
+
 csharp_prefer_braces=true:none
 dotnet_style_parentheses_in_arithmetic_binary_operators=never_if_unnecessary:suggestion
 dotnet_style_parentheses_in_other_binary_operators=never_if_unnecessary:suggestion
 dotnet_style_parentheses_in_relational_binary_operators=never_if_unnecessary:suggestion
 
+############################
 # ReSharper properties
+############################
+
 resharper_braces_redundant=true
 resharper_csharp_max_line_length=80
 

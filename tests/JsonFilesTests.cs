@@ -12,7 +12,7 @@ namespace Tests
             @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player\player.JSON";
 
         private readonly string rF2PlayerEditorFilterJson =
-            "../../rF2PlayerEditorFilter.JSON";
+            "../../../../rF2PlayerEditorFilter.JSON";
 
         /// <summary>Read Player.JSON</summary>
         [TestMethod()]

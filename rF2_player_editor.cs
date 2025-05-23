@@ -25,7 +25,6 @@ public class Config
 
     internal Config()
     {
-        rf2Lmu = Games.RF2;
         playerPath =
             @"c:\Program Files (x86)\Steam\steamapps\common\rFactor 2\UserData\player";
         playerJson = @"player.JSON";
@@ -85,7 +84,7 @@ public class Config
     }
 }
 
-enum Games
+public enum Games
 {
     RF2,
     LMU
@@ -103,6 +102,7 @@ internal class Configs : IEnumerable<KeyValuePair<Games, Config>>
                 Games.RF2,
                 new Config
                 {
+                    rf2Lmu = Games.RF2,
                     playerPath =
                         "c:\\Program Files (x86)\\Steam\\steamapps\\common\\rFactor 2\\UserData\\player",
                     playerJson = "Player.JSON",
@@ -117,6 +117,7 @@ internal class Configs : IEnumerable<KeyValuePair<Games, Config>>
                 Games.LMU,
                 new Config
                 {
+                    rf2Lmu = Games.LMU,
                     playerPath =
                         "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Le Mans Ultimate\\UserData\\player",
                     playerJson = "Settings.JSON",
@@ -232,7 +233,7 @@ internal static class rF2_player_editor
             var playerOriginal = JsonFiles.ReadJsonFile(cfg.playerJsonPath);
             var playerFilter =
                 JsonFiles.ReadJsonFile(cfg.playerEditorFilterJson);
-            WriteDict.writeDict = playerOriginal;
+            JsonFiles.CopyDict(ref playerOriginal, out WriteDict.writeDict);
             // Get Player.JSON path from the file then remove it from the dictionary
             cfg.playerJsonPath = playerFilter[cfg.playerJson];
             playerFilter.Remove(cfg.playerJson);
@@ -254,7 +255,7 @@ internal static class rF2_player_editor
             if (diff.Count > 0)
             { // Content has changed, offer to save / save as
                 form.SaveChanges();
-                JsonFiles.WriteJsonFile(EditorJsonPath, configs); // TBD: 
+                JsonFiles.WriteJsonFile(Games.LMU, EditorJsonPath, configs); // TBD: 
             }
             runEditor = form.ExitCode;
             // switch games
@@ -262,14 +263,6 @@ internal static class rF2_player_editor
         }
     }
 
-    public static void ChangeToLMU()
-    {
-        cfg = configs[Games.LMU];
-    }
-    public static void ChangeToRF2()
-    {
-        cfg = configs[Games.RF2];
-    }
 
     internal class Options
     {
@@ -319,6 +312,6 @@ internal static class rF2_player_editor
 
     public static void SaveChanges()
     {
-        JsonFiles.WriteGameJsonFile(cfg.playerJsonPath, WriteDict.writeDict);
+        JsonFiles.WriteGameJsonFile(cfg.rf2Lmu, cfg.playerJsonPath, WriteDict.writeDict);
     }
 }

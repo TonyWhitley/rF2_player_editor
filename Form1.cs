@@ -102,8 +102,7 @@ public partial class Form1 : Form
                 entriesInThisTab++;
             }
             else
-            {
-                // JSON keys ending in # are comments, use them for tooltips
+            {   // JSON keys ending in # are comments, use them for tooltips
                 name = name.Trim('#');
                 string tip = entry.Value;
                 if (tip.Length > 45) // If more than 45 chars wrap every 40
@@ -186,7 +185,6 @@ public partial class Form1 : Form
             leMansUltimateToolStripMenuItem_Click(null, null);
             this.Text = "Le Mans Ultimate Player Editor";
         }
-        rFactorToolStripMenuItem_Click(null, null);
 
         for (var u = 0; u < tabCount; u++)
         {

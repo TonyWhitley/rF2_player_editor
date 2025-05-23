@@ -42,14 +42,14 @@ public static class JsonFiles
 
         try
         {
-            var obj = JsonConvert.DeserializeObject<T>(
-                json,
+            var obj = JsonConvert.DeserializeObject<T>(json,
                 new JsonSerializerSettings
                 {
-                    Converters = new List<JsonConverter> 
-                        { new StringEnumConverter() }
-                }
-            ); 
+                    Converters = new List<JsonConverter>
+                    {
+                        new StringEnumConverter()
+                    }
+                });
             return obj;
         }
         catch (Exception ex)
@@ -62,17 +62,20 @@ public static class JsonFiles
     /// <summary>
     /// Create a dict of dicts, one for each tab, from the filter file
     /// </summary>
-    public static dict ParseRF2PlayerEditorFilter(
-        dict rF2PlayerEditorFilter)
+    public static dict ParseRF2PlayerEditorFilter(dict rF2PlayerEditorFilter)
     {
         var tabs = new dict();
         // Throw away the prepended Player.JSON key
         rF2PlayerEditorFilter.Remove("Player.JSON");
         foreach (var tabName in rF2PlayerEditorFilter)
         {
-            //foreach (var f in rF2PlayerEditorFilter[tabName.Key].Children())
-            tabs[tabName.Key] = rF2PlayerEditorFilter[tabName.Key]
-                .ToObject<dict>();
+            if (!tabName.Key.Contains("#"))
+            {
+                //foreach (var f in rF2PlayerEditorFilter[tabName.Key].Children())
+                tabs[tabName.Key] = rF2PlayerEditorFilter[tabName.Key]
+                    .ToObject<dict>();
+            }
+            // else it's a comment
         }
 
         return tabs;
@@ -96,7 +99,7 @@ public static class JsonFiles
     /// <summary>
     /// Write a dict to JSON file.
     /// </summary>
-    public static void WriteGameJsonFile(string filepath, dict dictionary)
+    public static void WriteGameJsonFile(Games game, string filepath, dict dictionary)
     {
         foreach (var section in dictionary)
         {
@@ -114,32 +117,34 @@ public static class JsonFiles
                 }
             }
         }
-        WriteJsonFile<dict>(filepath, dictionary);
+        WriteJsonFile<dict>(game, filepath, dictionary);
     }
-    public static void WriteJsonFile<T>(string filepath, T obj)
+
+    public static void WriteJsonFile<T>(Games game, string filepath, T obj)
     {
-        var jsonString =
-            JsonConvert.SerializeObject(
-                obj,
-                Formatting.Indented,
-                new JsonSerializerSettings
+        var jsonString = JsonConvert.SerializeObject(obj, Formatting.Indented,
+            new JsonSerializerSettings
+            {
+                Converters = new List<JsonConverter>
                 {
-                    Converters = new List<JsonConverter> { new Newtonsoft.Json.Converters.StringEnumConverter() }
+                    new StringEnumConverter()
                 }
-            );
-        jsonString = JsonToRF2(jsonString);
+            });
+        if (game == Games.RF2)
+        {
+            jsonString = JsonToRF2(jsonString);
+        }
         File.WriteAllText(filepath, jsonString);
     }
 
     /// <summary>
-    /// Serialize object into a JSON string
+    /// Serialize object into a JSON string (unit test)
     /// </summary>
     /// <param name="obj"></param>
     /// <returns>JSON string</returns>
     public static string SerializeObject(object obj)
     {
-        var jsonString =
-            JsonConvert.SerializeObject(obj, Formatting.Indented);
+        var jsonString = JsonConvert.SerializeObject(obj, Formatting.Indented);
         jsonString = JsonToRF2(jsonString);
         return jsonString;
     }
@@ -149,15 +154,14 @@ public static class JsonFiles
     /// </summary>
     public static void CopyDictValues(ref dict fromDict, ref dict toDict)
     {
-        foreach (var entry in toDict
-                ) // to_dict[to_dict.Keys].ToObject<dict>())
+        foreach (var entry in toDict) // to_dict[to_dict.Keys].ToObject<dict>())
         {
             var name = entry.Key;
             foreach (var key in toDict[name])
             {
                 if (!key.Name.EndsWith("#") && // If it's not a comment
-                    fromDict[name][key.Name] != null
-                   ) // and from_dict has the key
+                    fromDict[name][key.Name] !=
+                    null) // and from_dict has the key
                 {
                     toDict[name][key.Name] = fromDict[name][key.Name];
                 }
@@ -168,11 +172,9 @@ public static class JsonFiles
     /// <summary>
     /// Copy the values from a dict to this program's filter dict
     /// </summary>
-    public static void CopyAllValuesToFilter(ref dict fromDict,
-        ref dict toDict)
+    public static void CopyAllValuesToFilter(ref dict fromDict, ref dict toDict)
     {
-        foreach (var entry in toDict
-                ) // to_dict[to_dict.Keys].ToObject<dict>())
+        foreach (var entry in toDict) // to_dict[to_dict.Keys].ToObject<dict>())
         {
             dict tabDict = toDict[entry.Key];
             CopyDictValues(ref fromDict, ref tabDict);
@@ -185,8 +187,8 @@ public static class JsonFiles
     public static void CopyAllValuesFromFilter(ref dict fromDict,
         ref dict toDict)
     {
-        foreach (var entry in fromDict
-                ) // to_dict[to_dict.Keys].ToObject<dict>())
+        foreach (var entry in
+                 fromDict) // to_dict[to_dict.Keys].ToObject<dict>())
         {
             dict tabDict = fromDict[entry.Key];
             CopyDictValues(ref tabDict, ref toDict);
@@ -196,21 +198,30 @@ public static class JsonFiles
     /// <summary>
     /// Copy the values from a tab's dict to the Player dict
     /// </summary>
-    public static void CopyAllValuesFromTab(ref dict fromDict,
-        ref dict toDict)
+    public static void CopyAllValuesFromTab(ref dict fromDict, ref dict toDict)
     {
-        foreach (var entry in fromDict
-                ) // to_dict[to_dict.Keys].ToObject<dict>())
+        foreach (var entry in
+                 fromDict) // to_dict[to_dict.Keys].ToObject<dict>())
         {
             dict tabDict = fromDict[entry.Key];
             CopyDictValues(ref tabDict, ref toDict);
         }
     }
+
+    /// <summary>
+    /// Copy a dict to a another dict
+    /// </summary>
+    public static void CopyDict(ref dict fromDict, out dict toDict)
+    {
+        // Deep copy using JSON serialization
+        toDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(
+            JsonConvert.SerializeObject(fromDict));
+    }
 }
 
 
 public static class WriteDict
-{
+    {
     public static dict writeDict;
     public static bool changed = false;
 

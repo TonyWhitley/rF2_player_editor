@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 using CommandLine;
 
-namespace rF2_player_editor;
+namespace S397ConfigEditor;
 
 public class Config
 {
@@ -110,7 +110,7 @@ internal class Configs : IEnumerable<KeyValuePair<Games, Config>>
                         "c:\\Program Files (x86)\\Steam\\steamapps\\common\\rFactor 2\\UserData\\player\\Player.JSON",
                     playerJsonFilter = "rF2PlayerEditorFilter.JSON",
                     playerEditorFilterJson =
-                        "..\\..\\..\\rF2PlayerEditorFilter.JSON"
+                        "rF2PlayerEditorFilter.JSON"
                 }
             },
             {
@@ -125,7 +125,7 @@ internal class Configs : IEnumerable<KeyValuePair<Games, Config>>
                         "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Le Mans Ultimate\\UserData\\player\\Settings.JSON",
                     playerJsonFilter = "LMUSettingsFilter.JSON",
                     playerEditorFilterJson =
-                        "..\\..\\..\\LMUSettingsFilter.JSON"
+                        "LMUSettingsFilter.JSON"
                 }
             }
         };
@@ -154,7 +154,7 @@ internal class Configs : IEnumerable<KeyValuePair<Games, Config>>
 
 
 /// <summary>
-/// This is an editor for rFactor 2's Player.json file.
+/// This is an editor for S397's Player.json file.
 /// It uses a second file rF2PlayerEditorFilter.json which can be modified
 /// to change
 /// a) Which keys are displayed
@@ -185,7 +185,7 @@ internal class Configs : IEnumerable<KeyValuePair<Games, Config>>
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable S101 // Naming Styles
 
-internal static class rF2_player_editor
+internal static class S397ConfigEditor
 
 #pragma warning restore S101 // Naming Styles
 #pragma warning restore IDE1006 // Naming Styles

@@ -1,0 +1,17 @@
+Microsoft (R) Build Engine version 16.11.6+a918ceb31 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started Sat 24 05 2025 13:17:56.
+Project "C:\Users\tony_\source\repos\S397ConfigEditor\S397ConfigEditor.Installer\S397ConfigEditor.installer.wixproj" on node 1 (Rebuild target(s)).
+C:\Users\tony_\source\repos\S397ConfigEditor\S397ConfigEditor.Installer\S397ConfigEditor.installer.wixproj : error MSB4057: The target "Rebuild" does not exist in the project.
+Done Building Project "C:\Users\tony_\source\repos\S397ConfigEditor\S397ConfigEditor.Installer\S397ConfigEditor.installer.wixproj" (Rebuild target(s)) -- FAILED.
+
+Build FAILED.
+
+"C:\Users\tony_\source\repos\S397ConfigEditor\S397ConfigEditor.Installer\S397ConfigEditor.installer.wixproj" (Rebuild target) (1) ->
+  C:\Users\tony_\source\repos\S397ConfigEditor\S397ConfigEditor.Installer\S397ConfigEditor.installer.wixproj : error MSB4057: The target "Rebuild" does not exist in the project.
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:00.05

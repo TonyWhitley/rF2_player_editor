@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace rF2_player_editor;
+namespace S397ConfigEditor;
 
 using dict = Dictionary<string, dynamic>;
 
@@ -178,12 +178,12 @@ public partial class Form1 : Form
         if (cfg.rf2Lmu == Games.RF2)
         {
             rFactorToolStripMenuItem_Click(null, null);
-            this.Text = "rFactor 2 Player Editor";
+            this.Text = "rFactor 2 Player.JSON Editor";
         }
         else
         {
             leMansUltimateToolStripMenuItem_Click(null, null);
-            this.Text = "Le Mans Ultimate Player Editor";
+            this.Text = "Le Mans Ultimate Settings.JSON Editor";
         }
 
         for (var u = 0; u < tabCount; u++)
@@ -235,7 +235,7 @@ public partial class Form1 : Form
     {
         var message = string.Format(
             "You have made changes, do you want to save them?",
-            rF2_player_editor.cfg.playerJson);
+            S397ConfigEditor.cfg.playerJson);
         const string caption = "Closing down";
         var result = MessageBox.Show(message, caption,
             MessageBoxButtons.YesNo,
@@ -249,8 +249,8 @@ public partial class Form1 : Form
 
     private void FileMenuItemOpenClick(object sender, EventArgs e)
     {
-        openFileDialog.InitialDirectory = rF2_player_editor.cfg.GetTheDataFilePath();
-        openFileDialog.FileName = rF2_player_editor.cfg.playerJsonFilter;
+        openFileDialog.InitialDirectory = S397ConfigEditor.cfg.GetTheDataFilePath();
+        openFileDialog.FileName = S397ConfigEditor.cfg.playerJsonFilter;
         if (openFileDialog.ShowDialog() == DialogResult.OK)
         {
             var editsFile = openFileDialog.FileName;
@@ -261,13 +261,13 @@ public partial class Form1 : Form
 
     private void FileMenuItemSaveClick(object sender = null, EventArgs e = null)
     {
-        saveFileDialog.InitialDirectory = rF2_player_editor.cfg.playerPath;
-        saveFileDialog.FileName = rF2_player_editor.cfg.playerJson;
+        saveFileDialog.InitialDirectory = S397ConfigEditor.cfg.playerPath;
+        saveFileDialog.FileName = S397ConfigEditor.cfg.playerJson;
         saveFileDialog.Filter = "JSON files|*.JSON";
         if (saveFileDialog.ShowDialog() == DialogResult.OK)
         {
-            rF2_player_editor.cfg.playerJsonPath = saveFileDialog.FileName;
-            rF2_player_editor.SaveChanges();
+            S397ConfigEditor.cfg.playerJsonPath = saveFileDialog.FileName;
+            S397ConfigEditor.SaveChanges();
             //MessageBox.Show(string.Format("Saved as {0}", Config.playerJsonPath));
         }
     }

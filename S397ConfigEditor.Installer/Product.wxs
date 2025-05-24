@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="S397ConfigEditor" Language="1033" Version="1.0.0.0" Manufacturer="A Seven Smiles Product" UpgradeCode="99acc73c-ef6f-41a0-a9b4-a4191863694b">
+    <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of S397ConfigEditor is already installed." />
+    <MediaTemplate />
+
+    <Feature Id="ProductFeature" Title="S397ConfigEditor" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="S397ConfigEditor" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="MainExecutable" Guid="99acc73c-ef6f-41a0-a9b4-a4191863694b">
+        <File Source="$(var.S397ConfigEditor.TargetPath)" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

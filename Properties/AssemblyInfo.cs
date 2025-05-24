@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("rFactor 2 Player.JSON editor")]
-[assembly: AssemblyDescription("Graphical editor for rFactor 2 configuration items")]
+[assembly: AssemblyTitle("S397 configuration files editor")]
+[assembly: AssemblyDescription("Graphical editor for S397 configuration items")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("A Seven Smiles Product")]
-[assembly: AssemblyProduct("rF2 Player Editor")]
-[assembly: AssemblyCopyright("Copyright © Seven Smiles 2020")]
+[assembly: AssemblyProduct("S397 Configuration Editor")]
+[assembly: AssemblyCopyright("Copyright © Seven Smiles 2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

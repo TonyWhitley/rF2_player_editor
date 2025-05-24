@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using rF2_player_editor;
+using S397ConfigEditor;
 
 namespace tests
 {

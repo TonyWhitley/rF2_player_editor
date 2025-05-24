@@ -7,7 +7,7 @@ using System.Text;
 
 using Newtonsoft.Json.Converters;
 
-namespace rF2_player_editor;
+namespace S397ConfigEditor;
 
 using dict = System.Collections.Generic.Dictionary<string, dynamic>;
 
@@ -101,19 +101,23 @@ public static class JsonFiles
     /// </summary>
     public static void WriteGameJsonFile(Games game, string filepath, dict dictionary)
     {
-        foreach (var section in dictionary)
-        {
-            foreach (var entry in dictionary[section.Key])
+        if (false)//game == Games.RF2)
+        {   // Now not sure what this does but LMU doesn't need it
+            // Neither does rF2 it seems
+            foreach (var section in dictionary)
             {
-                if (entry.Name.Contains(" Version"))
+                foreach (var entry in dictionary[section.Key])
                 {
-                    // Version entries are strings not doubles "
-                    dictionary[section.Key][entry.Name] = entry.Value;
-                }
-                else
-                {
-                    dictionary[section.Key][entry.Name] =
-                        WriteDict.TextToObject(entry.Value.ToString());
+                    if (entry.Name.Contains(" Version"))
+                    {
+                        // Version entries are strings not doubles "
+                        dictionary[section.Key][entry.Name] = entry.Value;
+                    }
+                    else
+                    {
+                        dictionary[section.Key][entry.Name] =
+                            WriteDict.TextToObject(entry.Value.ToString());
+                    }
                 }
             }
         }
@@ -336,6 +340,9 @@ public static class WriteDict
 
     static bool AreValuesEqual(dynamic value1, dynamic value2)
     {
+        // JObject/JToken deep comparison
+        if (value1 is Newtonsoft.Json.Linq.JToken token1 && value2 is Newtonsoft.Json.Linq.JToken token2)
+            return Newtonsoft.Json.Linq.JToken.DeepEquals(token1, token2);
         // Compare the values using dynamic comparison
         return value1 == value2;
     }

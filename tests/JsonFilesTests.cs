@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using rF2_player_editor;
+using S397ConfigEditor;
 
 namespace Tests
 {

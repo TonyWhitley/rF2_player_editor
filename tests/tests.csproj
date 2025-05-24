@@ -110,9 +110,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\rF2_player_editor.csproj">
+    <ProjectReference Include="..\S397ConfigEditor.csproj">
       <Project>{8bfc9c09-ab79-474a-9c57-fa8cb15c671a}</Project>
-      <Name>rF2_player_editor</Name>
+      <Name>S397ConfigEditor</Name>
       <Private>True</Private>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>

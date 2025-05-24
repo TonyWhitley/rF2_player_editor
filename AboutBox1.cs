@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace rF2_player_editor;
+namespace S397ConfigEditor;
 
 partial class AboutBox1 : Form
 {
@@ -20,6 +20,8 @@ partial class AboutBox1 : Form
         this.labelCopyright.Text = AssemblyCopyright;
         this.labelCompanyName.Text = AssemblyCompany;
         this.textBoxDescription.Text = AssemblyDescription;
+        this.textBoxDescription.Text +=
+            "\n\n Can also run from the command line";
     }
 
     #region Assembly Attribute Accessors

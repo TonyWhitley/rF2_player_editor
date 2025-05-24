@@ -1,4 +1,4 @@
-﻿namespace rF2_player_editor
+﻿namespace S397ConfigEditor
 {
     partial class Form1
     {
